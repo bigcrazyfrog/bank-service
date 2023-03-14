@@ -7,4 +7,7 @@ __pycache__
 /.env*
 .idea
 *.sqlite3
+
+**/migrations/**
+!**/migrations
 !**/migrations/__init__.py
