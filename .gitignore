@@ -1,0 +1,10 @@
+.vscode/
+/venv/
+media/
+local_settings.py
+__pycache__
+*.pyc
+/.env*
+.idea
+*.sqlite3
+!**/migrations/__init__.py
