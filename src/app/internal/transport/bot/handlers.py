@@ -58,7 +58,7 @@ async def get_account_balance(update: Update, context: ContextTypes.DEFAULT_TYPE
     try:
         balance = await account_balance(update.effective_chat.id, context.args[0])
 
-        if balance:
+        if not (balance is None):
             text = st.balance + str(balance)
     except (IndexError, ValueError):
         text = st.incorrect
