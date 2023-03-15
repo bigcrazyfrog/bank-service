@@ -6,6 +6,12 @@ run:
 bot:
 	python src/manage.py bot
 
+build:
+	docker build -t bot-app:1 .
+
+up:
+	docker-compose up
+
 migrate:
 	python src/manage.py migrate $(if $m, api $m,)
 

@@ -1,0 +1,11 @@
+version: "3.9"
+
+services:
+  app:
+    container_name: app
+    image: bot-app:1
+    build: ./src
+    ports:
+      - "0.0.0.0:8000:8000"
+    volumes:
+      - ./src/mounted:/opt/file
