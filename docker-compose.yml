@@ -1,11 +1,26 @@
 version: "3.9"
 
 services:
-  app:
+  web:
     container_name: app
     image: bot-app:1
     build: ./src
-    ports:
-      - "0.0.0.0:8000:8000"
     volumes:
       - ./src/mounted:/opt/file
+    ports:
+      - "8000:8000"
+    expose:
+      - 8000
+    command: python ./src/manage.py runserver 0.0.0.0:8000
+
+  bot:
+    container_name: bot
+    image: bot-app:1
+    build: ./src
+    volumes:
+      - ./src/mounted:/opt/file
+    ports:
+      - "1234:1234"
+    expose:
+      - 8000
+    command: python ./src/manage.py bot
