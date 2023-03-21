@@ -6,7 +6,6 @@ __pycache__
 *.pyc
 .env
 .idea
-*.sqlite3
 
 **/migrations/**
 !**/migrations
