@@ -2,13 +2,10 @@ image: docker/compose:alpine-1.28.0
 
 stages:
   - build
-  - lint
-  - test
   - deploy
 
 before_script:
   - apk add make
-  - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
   - cp $DOT_ENV $(pwd)/.env
 
 build:
@@ -17,28 +14,6 @@ build:
     - make build push
   tags:
     - job:build
-  only:
-    - master
-  environment:
-    name: prod
-
-lint:
-  stage: lint
-  script:
-    - make lint
-  tags:
-    - job:lint
-  only:
-    - master
-  environment:
-    name: prod
-
-test:
-  stage: build
-  script:
-    - make pull test
-  tags:
-    - job:test
   only:
     - master
   environment:
@@ -54,4 +29,4 @@ deploy:
     - master
   environment:
     name: prod
-  when: manual
+
