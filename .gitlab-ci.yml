@@ -11,6 +11,7 @@ stages:
 build:
   stage: build
   script:
+    - ls
     - touch /app/.env
     - cp $DOT_ENV /app/.env
     - docker build -t bot-app:1 .
