@@ -4,18 +4,12 @@ stages:
   - build
   - deploy
 
-before_script:
-  - apk add make
-  - docker login -u "cibinnikita@gmail.com" -p "docker1234"
-  - cp $DOT_ENV $(pwd)/.env
-
 build:
   stage: build
   script:
     - docker build
-    - docker push
   tags:
-    - job:build
+    - build
   only:
     - master
   environment:
@@ -24,11 +18,10 @@ build:
 deploy:
   stage: deploy
   script:
-    - docker pull
     - docker compose down
     - docker compose up
   tags:
-    - job:deploy
+    - deploy
   only:
     - master
   environment:
