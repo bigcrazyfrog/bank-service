@@ -8,5 +8,4 @@ stages:
 test:
   stage: test
   script: 
-    - echo $CI_PROJECT_DIR/
-    - echo '*******************' 
+    - docker compose up
