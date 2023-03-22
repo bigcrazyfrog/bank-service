@@ -1,29 +1,10 @@
-image: docker/compose:alpine-1.28.0
-
-stages:
-  - build
-  - deploy
-
-build:
-  stage: build
-  script:
-    - docker build
+default:
   tags:
     - build
-  only:
-    - master
-  environment:
-    name: prod
 
-deploy:
-  stage: deploy
-  script:
-    - docker compose down
-    - docker compose up
-  tags:
-    - deploy
-  only:
-    - master
-  environment:
-    name: prod
+stages:
+  - test
 
+test:
+  stage: test
+  script: echo $CI_PROJECT_DIR/
