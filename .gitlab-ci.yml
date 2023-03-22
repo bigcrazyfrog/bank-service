@@ -4,8 +4,9 @@ default:
     - deploy
 
 stages:
-  - deploy
   - build
+  - deploy
+  
 
 build:
   stage: build
