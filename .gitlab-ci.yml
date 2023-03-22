@@ -1,11 +1,19 @@
 default:
   tags:
     - build
+    - deploy
 
 stages:
-  - test
+  - deploy
+  - build
 
-test:
-  stage: test
+build:
+  stage: build
+  script:
+    - docker build -t bot-app:1 .
+
+deploy:
+  stage: deploy
   script: 
+    - docker compose down
     - docker compose up
