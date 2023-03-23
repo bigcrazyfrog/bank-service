@@ -18,7 +18,7 @@ build:
     - docker build -t frogfrog243/bot-app:1 .
     - docker push frogfrog243/bot-app:1
   only:
-    - master
+    - main
   environment:
     name: prod
 
@@ -30,6 +30,6 @@ deploy:
     - docker compose down
     - docker compose up -d
   only:
-    - master
+    - main
   environment:
     name: prod
