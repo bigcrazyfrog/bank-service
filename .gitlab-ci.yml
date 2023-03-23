@@ -12,6 +12,7 @@ build:
   script:
     - touch .env
     - cp $DOT_ENV .env
+    - make build
     - echo $CI_REGISTRY_USER
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     - docker build -t frogfrog243/bot-app:1 .
@@ -35,7 +36,7 @@ lint:
 test:
   stage: test
   tags:
-    - job:test
+    - test
   script:
     - echo "test"
   only:
@@ -46,7 +47,7 @@ test:
 deploy:
   stage: deploy
   tags:
-    - job:deploy
+    - deploy
   script: 
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     - docker pull frogfrog243/bot-app:1
