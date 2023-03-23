@@ -13,6 +13,7 @@ build:
   script:
     - touch .env
     - cp $DOT_ENV .env
+    - echo $USER
     - docker login -u $USER -p $PASSWORD
     - docker build -t $IMAGE_APP .
     - docker push $IMAGE_APP
