@@ -9,8 +9,10 @@ bot:
 build:
 	docker build -t frogfrog243/bot-app:1 .
 
-up:
+down:
 	docker compose down
+
+up:
 	docker compose up -d
 
 test:
