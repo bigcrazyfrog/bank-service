@@ -36,6 +36,8 @@ build:       # This job runs in the build stage, which runs first.
   script:
     - echo "Compiling the code..."
     - echo "Compile complete."
+  environment:
+    name: prod
 
 test:   # This job runs in the test stage.
   stage: test    # It only starts when the job in the build stage completes successfully.
@@ -45,6 +47,8 @@ test:   # This job runs in the test stage.
     - master
   script:
     - echo "Running tests..."
+  environment:
+    name: prod
 
 lint:   # This job also runs in the test stage.
   stage: lint    # It can run at the same time as unit-test-job (in parallel).
@@ -55,6 +59,8 @@ lint:   # This job also runs in the test stage.
   script:
     - echo "Linting code... This will take about 10 seconds."
     - echo "No lint issues found."
+  environment:
+    name: prod
 
 deploy:      # This job runs in the deploy stage.
   stage: deploy  # It only runs when *both* jobs in the test stage complete successfully.
@@ -62,8 +68,8 @@ deploy:      # This job runs in the deploy stage.
     - job:deploy
   only:
     - master
-  environment: 
-      name: prod
   script:
     - echo "Deploying application..."
     - echo "Application successfully deployed."
+  environment:
+    name: prod
