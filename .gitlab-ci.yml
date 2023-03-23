@@ -9,7 +9,6 @@ build:
   tags:
     - build
   script:
-    - touch .env
     - cp $DOT_ENV .env
     - make build
   only:
