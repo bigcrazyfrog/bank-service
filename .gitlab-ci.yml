@@ -13,12 +13,14 @@ build:
   script:
     - touch .env
     - cp $DOT_ENV .env
-    - docker login -u frogfrog243 -p docker1234
-    - docker build -t ${IMAGE} .
-    - docker push ${IMAGE}
+    - docker login -u ${USER} -p ${PASSWORD}
+    - docker build -t ${IMAGE_APP} .
+    - docker push ${IMAGE_APP}
 
 deploy:
   stage: deploy
   script: 
+    - docker login -u frogfrog243 -p docker1234
+    - docker pull ${IMAGE_APP}
     - docker compose down
     - docker compose up -d
