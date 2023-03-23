@@ -15,7 +15,7 @@ stages:
 build:
   stage: build
   tags:
-    - job:build
+    - build
   script:
     - touch .env
     - cp $DOT_ENV .env
@@ -31,7 +31,7 @@ build:
 lint:
   stage: lint
   tags:
-    - job:lint
+    - lint
   script:
     - echo "lint"
   only:
