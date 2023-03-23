@@ -11,7 +11,7 @@ build:
 
 up:
 	docker compose down
-    docker compose up -d
+	docker compose up -d
 
 test:
 	echo "test"
