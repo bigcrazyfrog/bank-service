@@ -2,6 +2,8 @@ image: docker/compose:alpine-1.28.0
 
 stages:
   - build
+  - lint
+  - test
   - deploy
 
 before_script:
@@ -20,6 +22,28 @@ build:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     - docker build -t frogfrog243/bot-app:1 .
     - docker push frogfrog243/bot-app:1
+  only:
+    - main
+  environment:
+    name: prod
+
+lint:
+  stage: lint
+  tags:
+    - job:lint
+  script:
+    - echo "lint"
+  only:
+    - main
+  environment:
+    name: prod
+
+test:
+  stage: test
+  tags:
+    - job:test
+  script:
+    - echo "test"
   only:
     - main
   environment:
