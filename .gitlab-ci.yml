@@ -4,12 +4,15 @@ stages:
   - test
   - deploy
 
+
+before_script:
+  - cp $DOT_ENV .env
+
 build:
   stage: build
   tags:
     - build
   script:
-    - cp $DOT_ENV .env
     - make build
   only:
     - main
