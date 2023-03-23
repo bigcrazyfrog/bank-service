@@ -13,9 +13,9 @@ build:
   script:
     - touch .env
     - cp $DOT_ENV .env
-    - docker login -u ${USER} -p ${PASSWORD}
-    - docker build -t ${IMAGE_APP} .
-    - docker push ${IMAGE_APP}
+    - docker login -u $USER -p $PASSWORD
+    - docker build -t $IMAGE_APP .
+    - docker push $IMAGE_APP
 
 deploy:
   stage: deploy
