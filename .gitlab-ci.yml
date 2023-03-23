@@ -7,6 +7,10 @@ stages:
   - build
   - deploy
   
+before_script:
+  - apk add make
+  - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+  - cp $DOT_ENV $(pwd)/.env
 
 build:
   stage: build
@@ -17,6 +21,10 @@ build:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     - docker build -t frogfrog243/bot-app:1 .
     - docker push frogfrog243/bot-app:1
+  only:
+    - master
+  environment:
+    name: prod
 
 deploy:
   stage: deploy
@@ -25,3 +33,7 @@ deploy:
     - docker pull frogfrog243/bot-app:1
     - docker compose down
     - docker compose up -d
+  only:
+    - master
+  environment:
+    name: prod
