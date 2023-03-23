@@ -38,7 +38,7 @@ test:
     - main
   environment:
     name: prod
- 
+
 deploy:
   stage: deploy
   tags:
