@@ -15,13 +15,13 @@ build:
     - cp $DOT_ENV .env
     - echo $CI_REGISTRY_USER
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-    - docker build -t frogfrog243/bot-app:1 .
-    - docker push frogfrog243/bot-app:1
+    - docker build -t $IMAGE_NAME .
+    - docker push $IMAGE_NAME
 
 deploy:
   stage: deploy
   script: 
-    - docker login -u frogfrog243 -p docker1234
-    - docker pull frogfrog243/bot-app:1
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - docker pull $IMAGE_NAME
     - docker compose down
     - docker compose up -d
