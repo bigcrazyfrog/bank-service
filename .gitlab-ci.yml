@@ -13,7 +13,9 @@ build:
   script:
     - touch .env
     - cp $DOT_ENV .env
-    - docker build -t bot-app:1 .
+    - docker login -u ${USER} -p {PASSWORD} ${REGISTRY}
+    - docker build -t ${IMAGE} .
+    - docker push ${IMAGE}
 
 deploy:
   stage: deploy
