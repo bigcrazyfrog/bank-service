@@ -7,10 +7,6 @@ stages:
   - build
   - deploy
   
-before_script:
-  - apk add make
-  - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-  - cp $DOT_ENV $(pwd)/.env
 
 build:
   stage: build
