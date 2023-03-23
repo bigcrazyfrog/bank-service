@@ -45,7 +45,7 @@ deploy:
   tags:
     - deploy
   script: 
-    - make down migrate up
+    - make down up
   only:
     - main 
   environment:
