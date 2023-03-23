@@ -22,7 +22,7 @@ lint:
   tags:
     - lint
   script:
-    - echo "lint"
+    - make lint
   only:
     - main
   environment:
