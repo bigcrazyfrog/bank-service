@@ -10,7 +10,11 @@ build:
 	docker build -t frogfrog243/bot-app:1 .
 
 up:
-	docker-compose up
+	docker compose down
+    docker compose up -d
+
+test:
+	echo "test"
 
 migrate:
 	python src/manage.py migrate $(if $m, api $m,)
