@@ -1,7 +1,5 @@
-default:
-  tags:
-    - build
-    - deploy
+
+image: docker/compose:alpine-1.28.0
 
 stages:
   - build
