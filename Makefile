@@ -1,4 +1,4 @@
-all: makemigrations migrate run
+all: migrate down up
 
 run:
 	python src/manage.py runserver
@@ -9,8 +9,10 @@ bot:
 build:
 	docker build -t frogfrog243/bot-app:1 .
 
-up:
+down:
 	docker compose down
+
+up:
 	docker compose up -d
 
 test:
