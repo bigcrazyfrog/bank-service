@@ -13,7 +13,7 @@ build:
   script:
     - touch .env
     - cp $DOT_ENV .env
-    - echo $DOCKER_USER
+    - echo $CI_REGISTRY_USER
     - docker login -u $CI_REGISTRY_USER -p docker1234
     - docker build -t frogfrog243/bot-app:1 .
     - docker push frogfrog243/bot-app:1
