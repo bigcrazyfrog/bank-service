@@ -3,7 +3,6 @@ stages:
   - lint
   - test
   - deploy
-  
 
 build:
   stage: build
@@ -23,7 +22,7 @@ lint:
   tags:
     - lint
   script:
-    - echo "lint"
+    - make lint
   only:
     - main
   environment:
@@ -34,7 +33,7 @@ test:
   tags:
     - test
   script:
-    - echo "test"
+    - make test
   only:
     - main
   environment:
@@ -45,10 +44,7 @@ deploy:
   tags:
     - deploy
   script: 
-    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-    - docker pull frogfrog243/bot-app:1
-    - docker compose down
-    - docker compose up -d
+    - make up
   only:
     - main
   environment:
