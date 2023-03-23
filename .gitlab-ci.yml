@@ -46,6 +46,6 @@ deploy:
   script: 
     - make up
   only:
-    - main
+    - main 
   environment:
     name: prod
