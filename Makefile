@@ -7,7 +7,9 @@ bot:
 	python src/manage.py bot
 
 build:
-	docker build -t bot-app:1 .
+	docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    docker build -t frogfrog243/bot-app:1 .
+    docker push frogfrog243/bot-app:1
 
 up:
 	docker-compose up
