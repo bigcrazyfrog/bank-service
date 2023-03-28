@@ -10,15 +10,11 @@ class Account(models.Model):
         null=False,
     )
 
-    telegram_id = models.PositiveIntegerField(
-        verbose_name='telegram ID',
-        null=False,
-    )
-
-    balance = models.IntegerField(
-        verbose_name='Balance',
-        null=False,
-        default=0,
+    user_profile = models.ForeignKey(
+        to='UserProfile',
+        on_delete=models.SET_NULL,
+        verbose_name='User profile',
+        null=True,
     )
 
     def __str__(self):
@@ -37,13 +33,14 @@ class Card(models.Model):
         null=False,
     )
 
-    account_number = models.ForeignKey(
+    account = models.ForeignKey(
         to='Account',
-        null=False,
         on_delete=models.CASCADE,
+        verbose_name='Account number',
+        null=False,
     )
 
-    balance = models.IntegerField(
+    balance = models.BigIntegerField(
         verbose_name='Balance',
         null=False,
         default=0,

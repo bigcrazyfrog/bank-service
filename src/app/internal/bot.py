@@ -5,14 +5,19 @@ from config.settings import BOT_TOKEN
 from .transport.bot.handlers import *
 
 
+commands = [
+    ('start', start),
+    ('setphone', set_phone),
+    ('me', me),
+    ('balance', balance),
+    ('accountlist', account_list),
+    ('cardlist', card_list),
+]
+
+
 def update_handlers(application):
-    application.add_handler(CommandHandler('start', start))
-    application.add_handler(CommandHandler('setphone', set_phone))
-    application.add_handler(CommandHandler('me', me))
-    application.add_handler(CommandHandler('accountbalance', get_account_balance))
-    application.add_handler(CommandHandler('accountlist', get_account_list))
-    application.add_handler(CommandHandler('cardlist', get_card_list))
-    application.add_handler(CommandHandler('cardbalance', get_card_balance))
+    for command in commands:
+        application.add_handler(CommandHandler(*command))
 
     return application
 
