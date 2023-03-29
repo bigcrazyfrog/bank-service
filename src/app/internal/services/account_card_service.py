@@ -32,6 +32,3 @@ class BankCard:
             return card.balance
         except Card.DoesNotExist:
             return None
-
-
-
