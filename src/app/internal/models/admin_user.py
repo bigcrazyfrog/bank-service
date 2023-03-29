@@ -1,6 +1,5 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
-from phonenumber_field.modelfields import PhoneNumberField
 
 
 class AdminUser(AbstractUser):
@@ -13,8 +12,10 @@ class UserProfile(models.Model):
         unique=True,
         null=False,
     )
-    phone_number = PhoneNumberField(
+
+    phone_number = models.CharField(
         verbose_name='phone number',
+        max_length=12,
         null=True,
         blank=True,
         default=None,
