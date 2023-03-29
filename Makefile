@@ -7,13 +7,19 @@ bot:
 	python src/manage.py bot
 
 build:
-	docker build -t bot-app:1 .
+	docker build -t frogfrog243/bot-app:1 .
+
+down:
+	docker compose down
 
 up:
-	docker-compose up
+	docker compose up -d
+
+test:
+	echo "test"
 
 migrate:
-	python src/manage.py migrate $(if $m, api $m,)
+	python src/manage.py migrate 
 
 makemigrations:
 	python src/manage.py makemigrations
@@ -44,9 +50,7 @@ piplock:
 lint:
 	isort .
 	flake8 --config setup.cfg
-	black --config pyproject.toml .
 
 check_lint:
 	isort --check --diff .
 	flake8 --config setup.cfg
-	black --check --config pyproject.toml .
