@@ -117,7 +117,7 @@ STATIC_URL = "static/"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 AUTH_USER_MODEL = "app.AdminUser"
 
-# BOT settings
+# env settings
 
 env = environ.Env(
     # set casting, default value
