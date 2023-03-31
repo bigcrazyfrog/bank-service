@@ -5,7 +5,7 @@ services:
     container_name: app
     image: bot-app:1
     build:
-      context: ./src
+      context: .
       dockerfile: Dockerfile
     volumes:
       - ./src/mounted:/opt/file
@@ -19,7 +19,7 @@ services:
     container_name: bot
     image: bot-app:1
     build:
-      context: ./src
+      context: .
       dockerfile: Dockerfile
     volumes:
       - ./src/mounted:/opt/file
