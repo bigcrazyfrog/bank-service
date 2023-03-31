@@ -1,15 +1,17 @@
 FROM python:3.10-slim-buster
 
-ENV PYTHONUNBUFFERED 1
+ENV LANG C.UTF-8
+ENV LC_ALL C.UTF-8
+
 ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONFAULTHANDLER 1
 
-COPY Pipfile Pipfile.lock ./
+RUN apt-get update \
+	&& apt-get install -y --no-install-recommends \
+		postgresql-client \
+	&& rm -rf /var/lib/apt/lists/*
 
-RUN apt-get update && \
-    python -m pip install --upgrade pip && \
-    pip install pipenv
-
-RUN PIPENV_VENV_IN_PROJECT=1 pipenv install --deploy
-ENV PATH="/.venv/bin:$PATH"
+COPY requirements.txt ./
+RUN pip install -r requirements.txt
 
 COPY . .
