@@ -4,7 +4,6 @@ from config.settings import BOT_TOKEN
 
 from .transport.bot.handlers import *
 
-
 commands = [
     ('start', start),
     ('setphone', set_phone),
