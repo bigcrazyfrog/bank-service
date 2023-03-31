@@ -4,13 +4,11 @@ services:
   web:
     container_name: app
     image: bot-app:1
-    build:
-      context: .
-      dockerfile: Dockerfile
+    build: ./src
     volumes:
       - ./src/mounted:/opt/file
     ports:
-      - "80:8000"
+      - "8000:8000"
     expose:
       - 8000
     command: python ./src/manage.py runserver 0.0.0.0:8000
@@ -18,9 +16,7 @@ services:
   bot:
     container_name: bot
     image: bot-app:1
-    build:
-      context: .
-      dockerfile: Dockerfile
+    build: ./src
     volumes:
       - ./src/mounted:/opt/file
     ports:
