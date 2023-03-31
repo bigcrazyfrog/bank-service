@@ -28,3 +28,16 @@ def bot_polling():
     update_handlers(application)
 
     application.run_polling()
+
+
+def bot_webhook():
+    application = ApplicationBuilder().token(BOT_TOKEN).build()
+
+    update_handlers(application)
+
+    application.run_webhook(
+        listen='127.0.0.1',
+        port=5000,
+        url_path='TOKEN',
+        webhook_url='https://nikita.backend23.2tapp.cc:5000/TOKEN',
+    )
