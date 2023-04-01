@@ -7,7 +7,7 @@ bot:
 	python src/manage.py bot
 
 build:
-	docker build -t frogfrog243/bot-app:1 .
+	docker build -t bot-app:1 .
 
 down:
 	docker compose down
