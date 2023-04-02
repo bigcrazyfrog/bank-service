@@ -20,7 +20,7 @@ services:
     volumes:
       - ./src/mounted:/opt/file
     ports:
-      - "443:443"
+      - "8443:8443"
     expose:
-      - 8000
+      - 8443
     command: python ./src/manage.py bot
