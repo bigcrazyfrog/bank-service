@@ -38,5 +38,5 @@ def bot_webhook():
         listen='127.0.0.1',
         port=8443,
         url_path='TOKEN',
-        webhook_url='http://127.0.0.1:8443/TOKEN/',
+        webhook_url='https://127.0.0.1:8443/TOKEN/',
     )
