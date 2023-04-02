@@ -9,6 +9,7 @@ services:
       - ./src/mounted:/opt/file
     ports:
       - "8090:8090"
+      - "443:443"
     command: python ./src/manage.py runserver 0.0.0.0:8090
 
   bot:
