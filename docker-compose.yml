@@ -8,10 +8,10 @@ services:
     volumes:
       - ./src/mounted:/opt/file
     ports:
-      - "8000:8000"
+      - "80:80"
     expose:
-      - 8000
-    command: python ./src/manage.py runserver 0.0.0.0:8000
+      - 80
+    command: python ./src/manage.py runserver 0.0.0.0:80
 
   bot:
     container_name: bot
