@@ -1,11 +1,11 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "4d1f20e10fd55fd5fec31cf99dd2cc958f41ae087d242472d39177328286a32d"
+            "sha256": "d5789001bdc43f9a7a4cc7946d888b4dce48b5093f079f401d3f128a2c7d5bc3"
         },
         "pipfile-spec": 6,
         "requires": {
-            "python_version": "*"
+            "python_version": "3.10"
         },
         "sources": [
             {
@@ -80,17 +80,6 @@
             "index": "pypi",
             "version": "==0.10.0"
         },
-        "django-phonenumber-field": {
-            "extras": [
-                "phonenumberslite"
-            ],
-            "hashes": [
-                "sha256:9edad2b2602af25f2aefc73c4cf53eaf7abf9e17d73c1c4372bd3052bebb26f9",
-                "sha256:de3e47b986b4959949762c16fd8fe26b3e462ef3e5531ed00950bd20c698576a"
-            ],
-            "index": "pypi",
-            "version": "==7.0.2"
-        },
         "h11": {
             "hashes": [
                 "sha256:8f19fbbe99e72420ff35c00b27a34cb9937e902a8b810e2c88300c6f0a3b699d",
@@ -138,13 +127,6 @@
             "markers": "python_version >= '3.7'",
             "version": "==0.11.1"
         },
-        "phonenumberslite": {
-            "hashes": [
-                "sha256:3ebe4838035bd26b99063f5886e7e58037095a0ef22e1f5be33ac1ca5e43f7b6",
-                "sha256:f28a941770abfe4f6c038137ae2c72b83017d516c80823b4f7bb07635991845e"
-            ],
-            "version": "==8.13.8"
-        },
         "platformdirs": {
             "hashes": [
                 "sha256:d5b638ca397f25f979350ff789db335903d7ea010ab28903f57b27e1b16c2b08",
@@ -173,6 +155,9 @@
             "version": "==2.9.5"
         },
         "python-telegram-bot": {
+            "extras": [
+                "webhooks"
+            ],
             "hashes": [
                 "sha256:4d1d4b643ce158aa17a0987b84005eaf25fe0ce8b38fd234099594985611c198",
                 "sha256:d0aa53e1f06d7cb7919cc0e2d6c81a02d968fc29921aeaa962edd1efb816a9bd"
@@ -214,12 +199,28 @@
             "markers": "python_version >= '3.6'",
             "version": "==1.2.3"
         },
+        "tornado": {
+            "hashes": [
+                "sha256:1d54d13ab8414ed44de07efecb97d4ef7c39f7438cf5e976ccd356bebb1b5fca",
+                "sha256:20f638fd8cc85f3cbae3c732326e96addff0a15e22d80f049e00121651e82e72",
+                "sha256:5c87076709343557ef8032934ce5f637dbb552efa7b21d08e89ae7619ed0eb23",
+                "sha256:5f8c52d219d4995388119af7ccaa0bcec289535747620116a58d830e7c25d8a8",
+                "sha256:6fdfabffd8dfcb6cf887428849d30cf19a3ea34c2c248461e1f7d718ad30b66b",
+                "sha256:87dcafae3e884462f90c90ecc200defe5e580a7fbbb4365eda7c7c1eb809ebc9",
+                "sha256:9b630419bde84ec666bfd7ea0a4cb2a8a651c2d5cccdbdd1972a0c859dfc3c13",
+                "sha256:b8150f721c101abdef99073bf66d3903e292d851bee51910839831caba341a75",
+                "sha256:ba09ef14ca9893954244fd872798b4ccb2367c165946ce2dd7376aebdde8e3ac",
+                "sha256:d3a2f5999215a3a06a4fc218026cd84c61b8b2b40ac5296a6db1f1451ef04c1e",
+                "sha256:e5f923aa6a47e133d1cf87d60700889d7eae68988704e20c75fb2d65677a8e4b"
+            ],
+            "version": "==6.2"
+        },
         "typing-extensions": {
             "hashes": [
                 "sha256:5cb5f4a79139d699607b3ef622a1dedafa84e115ab0024e0d9c044a9479ca7cb",
                 "sha256:fb33085c39dd998ac16d1431ebc293a8b3eedd00fd4a32de0ff79002c19511b4"
             ],
-            "markers": "python_version >= '3.7'",
+            "markers": "python_version >= '3.10'",
             "version": "==4.5.0"
         },
         "tzdata": {
@@ -229,6 +230,10 @@
             ],
             "markers": "sys_platform == 'win32'",
             "version": "==2023.3"
+        },
+        "unknown": {
+            "editable": true,
+            "path": "."
         }
     },
     "develop": {

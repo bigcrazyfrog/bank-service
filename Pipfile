@@ -11,12 +11,12 @@ flake8 = "~=4.0"
 django = "~=4.0"
 django-environ = "~=0.8"
 black = "~=21.12b0"
-python-telegram-bot = "*"
-django-phonenumber-field = {extras = ["phonenumberslite"], version = "*"}
 psycopg2 = "*"
+unknown = {editable = true, path = "."}
+python-telegram-bot = {extras = ["webhooks"], version = "*"}
 
 [requires]
-python_version = "*"
+python_version = "3.10"
 
 [pipenv]
 allow_prereleases = true
