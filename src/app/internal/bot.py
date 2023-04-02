@@ -35,7 +35,7 @@ def bot_webhook():
     update_handlers(application)
 
     application.run_webhook(
-        listen='127.0.0.1',
+        listen='0.0.0.0',
         port=8443,
         url_path='TOKEN',
         webhook_url='https://127.0.0.1:8443/TOKEN/',
