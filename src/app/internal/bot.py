@@ -1,4 +1,4 @@
-from telegram.ext import ApplicationBuilder, CommandHandler
+from telegram.ext import ApplicationBuilder, CommandHandler, ConversationHandler, MessageHandler, filters
 
 from config.settings import BOT_TOKEN
 
@@ -17,6 +17,21 @@ commands = [
 def update_handlers(application):
     for command in commands:
         application.add_handler(CommandHandler(*command))
+
+    conv_handler = ConversationHandler(
+        entry_points=[CommandHandler("send_money", send_money)],
+        states={
+            0: [MessageHandler(filters.TEXT & ~filters.COMMAND, card_number_enter)],
+            1: [MessageHandler(filters.TEXT & ~filters.COMMAND, amount_enter)],
+            2: [MessageHandler(filters.TEXT & ~filters.COMMAND, translation_type)],
+            3: [MessageHandler(filters.TEXT & ~filters.COMMAND, to_card)],
+            4: [MessageHandler(filters.TEXT & ~filters.COMMAND, to_telegram_id)],
+            5: [MessageHandler(filters.TEXT & ~filters.COMMAND, to_bank_account)],
+        },
+        fallbacks=[CommandHandler("cancel", cancel)],
+    )
+
+    application.add_handler(conv_handler)
 
     return application
 
