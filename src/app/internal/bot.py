@@ -38,5 +38,7 @@ def bot_webhook():
         listen='0.0.0.0',
         port=8443,
         url_path=BOT_TOKEN,
-        webhook_url=f'https://nikita.backend23.2tapp.cc:8443/{BOT_TOKEN}/',
+        key="/etc/letsencrypt/live/nikita.backend23.2tapp.cc/privkey.pem",
+        cert="/etc/letsencrypt/live/nikita.backend23.2tapp.cc/fullchain.pem",
+        webhook_url=f'https://nikita.backend23.2tapp.cc:8443/{BOT_TOKEN}',
     )
