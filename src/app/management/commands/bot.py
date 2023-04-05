@@ -7,4 +7,4 @@ class Command(BaseCommand):
     help = 'bot'
 
     def handle(self, *args, **options):
-        bot_webhook()
+        bot_polling()
