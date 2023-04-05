@@ -36,7 +36,7 @@ def bot_webhook():
 
     application.run_webhook(
         listen='0.0.0.0',
-        port=3228,
-        url_path="6103841777:AAEWUwL0ct6qGHmkXbCd-Ok7IKb2dw5u1Oo",
-        webhook_url='https://nikita.backend23.2tapp.cc/6103841777:AAEWUwL0ct6qGHmkXbCd-Ok7IKb2dw5u1Oo',
+        port=8443,
+        url_path=BOT_TOKEN,
+        webhook_url=f'https://nikita.backend23.2tapp.cc/{BOT_TOKEN}/',
     )
