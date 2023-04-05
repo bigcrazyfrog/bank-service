@@ -38,5 +38,5 @@ def bot_webhook():
         listen='0.0.0.0',
         port=3228,
         url_path=BOT_TOKEN,
-        webhook_url=f'https://nikita.backend23.2tapp.cc/{BOT_TOKEN}/',
+        webhook_url=f'https://nikita.backend23.2tapp.cc:3228/{BOT_TOKEN}',
     )
