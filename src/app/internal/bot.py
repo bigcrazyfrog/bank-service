@@ -11,6 +11,7 @@ commands = [
     ('balance', balance),
     ('accountlist', account_list),
     ('cardlist', card_list),
+    ('help', help)
 ]
 
 

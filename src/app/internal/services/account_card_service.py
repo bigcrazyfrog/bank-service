@@ -20,6 +20,7 @@ class BankAccount:
         except Account.DoesNotExist:
             return False
 
+
 class BankCard:
     @staticmethod
     def get_list(telegram_id):

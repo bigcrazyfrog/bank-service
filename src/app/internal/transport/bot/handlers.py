@@ -1,15 +1,15 @@
 import telegram
 from asgiref.sync import async_to_sync, sync_to_async
-from telegram import Update, ReplyKeyboardMarkup, ReplyKeyboardRemove
+from telegram import ReplyKeyboardMarkup, ReplyKeyboardRemove, Update
 from telegram.ext import ContextTypes, ConversationHandler
 
 from app.internal.services.account_card_service import BankAccount, BankCard
-from app.internal.services.user_service import User, log_errors
 from app.internal.services.transactions_service import Transaction
+from app.internal.services.user_service import User, log_errors
 
-from . import static_text as st
-from ...models.account_card import Card, Account
+from ...models.account_card import Account, Card
 from ...models.favorite_user import FavoriteUser
+from . import static_text as st
 
 
 def send_message(update: Update, context: ContextTypes.DEFAULT_TYPE, text: str, markup=None):
@@ -30,6 +30,12 @@ def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     User.new_user(telegram_id=update.effective_chat.id)
 
     send_message(update, context, st.welcome)
+
+
+@log_errors
+@sync_to_async
+def help(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    send_message(update, context, st.help)
 
 
 @log_errors
@@ -162,8 +168,8 @@ def amount_enter(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     context.user_data["amount"] = amount
 
-    reply_keyboard = [["Telegram ID", "Bank account"],
-                      ["Card number"]]
+    reply_keyboard = [["🆔 Telegram ID", "📝 Счет в банке"],
+                      ["💳 Номер карты"]]
 
     markup = ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True)
     context.user_data["last_keyboard"] = markup
@@ -176,13 +182,13 @@ def amount_enter(update: Update, context: ContextTypes.DEFAULT_TYPE):
 @sync_to_async
 def translation_type(update: Update, context: ContextTypes.DEFAULT_TYPE):
     match update.message.text:
-        case "Telegram ID":
+        case "🆔 Telegram ID":
             send_message(update, context, st.send_to_telegram_id)
             return 4
-        case "Bank account":
+        case "📝 Счет в банке":
             send_message(update, context, st.send_to_bank_account)
             return 5
-        case "Card number":
+        case "💳 Номер карты":
             send_message(update, context, st.send_to_card_number)
             return 3
 
@@ -210,10 +216,14 @@ def to_card(update: Update, context: ContextTypes.DEFAULT_TYPE):
         send_message(update, context, st.not_in_favorite)
         return ConversationHandler.END
 
-    transaction = Transaction.to_card(context.user_data["from_card"], card,
-                                      context.user_data["amount"])
+    try:
+        Transaction.to_card(context.user_data["from_card"], card,
+                            context.user_data["amount"])
 
-    send_message(update, context, "Готово")
+        send_message(update, context, st.success)
+    except Exception:
+        send_message(update, context, st.error)
+
     return ConversationHandler.END
 
 
@@ -228,10 +238,14 @@ def to_telegram_id(update: Update, context: ContextTypes.DEFAULT_TYPE):
         send_message(update, context, st.not_in_favorite)
         return ConversationHandler.END
 
-    transaction = Transaction.to_telegram_id(context.user_data["from_card"],
-                                             telegram_id, context.user_data["amount"])
+    try:
+        Transaction.to_telegram_id(context.user_data["from_card"],
+                                   telegram_id, context.user_data["amount"])
 
-    send_message(update, context, st.success)
+        send_message(update, context, st.success)
+    except Exception:
+        send_message(update, context, st.error)
+
     return ConversationHandler.END
 
 

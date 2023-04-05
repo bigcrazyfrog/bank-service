@@ -1,6 +1,5 @@
 from app.internal.models.account_card import Account, Card
 from app.internal.models.bank_transaction import BankTransaction
-
 from app.internal.services.account_card_service import BankCard
 
 
