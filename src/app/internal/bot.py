@@ -51,8 +51,7 @@ def bot_webhook():
     update_handlers(application)
 
     application.run_webhook(
-        listen='0.0.0.0',
+        listen='51.250.97.80',
         port=8443,
-        url_path='TOKEN',
-        webhook_url='https://0.0.0.0:8443/TOKEN/',
+        webhook_url='https://51.250.97.80:8443/',
     )
