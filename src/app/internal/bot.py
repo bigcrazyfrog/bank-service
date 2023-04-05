@@ -37,5 +37,6 @@ def bot_webhook():
     application.run_webhook(
         listen='51.250.97.80',
         port=8443,
-        webhook_url='https://51.250.97.80:8443/',
+        url_path=BOT_TOKEN,
+        webhook_url=f'https://51.250.97.80:8443/{BOT_TOKEN}',
     )
