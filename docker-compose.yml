@@ -18,5 +18,5 @@ services:
     volumes:
       - ./src/mounted:/opt/file
     ports:
-      - "8443:8443"
+      - "8000:8000"
     command: python ./src/manage.py bot
