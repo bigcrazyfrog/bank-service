@@ -1,6 +1,6 @@
 import re
 
-from app.models import UserProfile
+from app.internal.models.admin_user import UserProfile
 
 RE_NUMBER = r'(^[+0-9]{1,3})*([0-9]{10,11}$)'
 

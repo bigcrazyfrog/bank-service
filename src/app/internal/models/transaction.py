@@ -1,7 +1,7 @@
 from django.db import models
 
 
-class BankTransaction(models.Model):
+class Transaction(models.Model):
     from_card = models.PositiveBigIntegerField(
         verbose_name='From card number',
         null=False,

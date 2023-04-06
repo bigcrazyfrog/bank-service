@@ -3,12 +3,11 @@ from asgiref.sync import async_to_sync, sync_to_async
 from telegram import ReplyKeyboardMarkup, ReplyKeyboardRemove, Update
 from telegram.ext import ContextTypes, ConversationHandler
 
-from app.internal.services.account_card_service import BankAccount, BankCard
-from app.internal.services.transactions_service import Transaction
+from app.internal.services.account_card_service import BankAccount, CardService
+from app.internal.services.transactions_service import TransactionService
 from app.internal.services.user_service import User, log_errors
 
 from ...models.account_card import Account, Card
-from ...models.favorite_user import FavoriteUser
 from . import static_text as st
 
 
@@ -71,7 +70,7 @@ def me(update: Update, context: ContextTypes.DEFAULT_TYPE):
 def balance(update: Update, context: ContextTypes.DEFAULT_TYPE):
     text = st.account_not_find
     try:
-        card_balance = BankCard.balance(update.effective_chat.id, context.args[0])
+        card_balance = CardService.balance(update.effective_chat.id, context.args[0])
 
         if not (card_balance is None):
             text = st.balance + str(card_balance)
@@ -96,7 +95,7 @@ def account_list(update: Update, context: ContextTypes.DEFAULT_TYPE):
 @log_errors
 @sync_to_async
 def card_list(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    numbers = BankCard.get_list(update.effective_chat.id)
+    numbers = CardService.get_list(update.effective_chat.id)
 
     text = st.balance_not_exist
 
@@ -109,13 +108,7 @@ def card_list(update: Update, context: ContextTypes.DEFAULT_TYPE):
 @log_errors
 @sync_to_async
 def send_money(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    try:
-        FavoriteUser.objects.get(profile__telegram_id=update.effective_chat.id)
-    except FavoriteUser.DoesNotExist:
-        send_message(update, context, st.no_access)
-        return ConversationHandler.END
-
-    cards = BankCard.get_list(update.effective_chat.id)
+    cards = CardService.get_list(update.effective_chat.id)
 
     reply_keyboard = []
     for card in cards:
@@ -139,7 +132,7 @@ def card_number_enter(update: Update, context: ContextTypes.DEFAULT_TYPE):
         send_message(update, context, st.incorrect_card, context.user_data["last_keyboard"])
         return 0
 
-    if not BankCard.is_exist(card, update.effective_chat.id):
+    if not CardService.is_exist(card, update.effective_chat.id):
         send_message(update, context, st.not_found, context.user_data["last_keyboard"])
         return 0
 
@@ -162,7 +155,7 @@ def amount_enter(update: Update, context: ContextTypes.DEFAULT_TYPE):
         send_message(update, context, st.incorrect_card)
         return 1
 
-    if amount > BankCard.balance(update.effective_chat.id, context.user_data["from_card"]):
+    if amount > CardService.balance(update.effective_chat.id, context.user_data["from_card"]):
         send_message(update, context, st.no_money)
         return 1
 
@@ -200,7 +193,7 @@ def translation_type(update: Update, context: ContextTypes.DEFAULT_TYPE):
 @sync_to_async
 def to_card(update: Update, context: ContextTypes.DEFAULT_TYPE):
     card = update.message.text
-    if not BankCard.is_exist(card):
+    if not CardService.is_exist(card):
         send_message(update, context, st.not_found)
         return 3
 
@@ -209,16 +202,8 @@ def to_card(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return 3
 
     try:
-        bank_card = Card.objects.get(number=update.message.text)
-        FavoriteUser.objects.get(profile__telegram_id=bank_card.account.user_profile.telegram_id)
-
-    except FavoriteUser.DoesNotExist:
-        send_message(update, context, st.not_in_favorite)
-        return ConversationHandler.END
-
-    try:
-        Transaction.to_card(context.user_data["from_card"], card,
-                            context.user_data["amount"])
+        TransactionService.to_card(context.user_data["from_card"], card,
+                                   context.user_data["amount"])
 
         send_message(update, context, st.success)
     except Exception:
@@ -231,16 +216,10 @@ def to_card(update: Update, context: ContextTypes.DEFAULT_TYPE):
 @sync_to_async
 def to_telegram_id(update: Update, context: ContextTypes.DEFAULT_TYPE):
     telegram_id = update.message.text
-    try:
-        FavoriteUser.objects.get(profile__telegram_id=telegram_id)
-
-    except FavoriteUser.DoesNotExist:
-        send_message(update, context, st.not_in_favorite)
-        return ConversationHandler.END
 
     try:
-        Transaction.to_telegram_id(context.user_data["from_card"],
-                                   telegram_id, context.user_data["amount"])
+        TransactionService.to_telegram_id(context.user_data["from_card"],
+                                          telegram_id, context.user_data["amount"])
 
         send_message(update, context, st.success)
     except Exception:
@@ -259,16 +238,8 @@ def to_bank_account(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return 5
 
     try:
-        bank_account = Account.objects.get(number=account)
-        FavoriteUser.objects.get(profile__telegram_id=bank_account.user_profile.telegram_id)
-
-    except FavoriteUser.DoesNotExist:
-        send_message(update, context, st.pitiful_attempt)
-        return ConversationHandler.END
-
-    try:
-        Transaction.to_bank_account(context.user_data["from_card"],
-                                    update.message.text, context.user_data["amount"])
+        TransactionService.to_bank_account(context.user_data["from_card"],
+                                           update.message.text, context.user_data["amount"])
 
         send_message(update, context, st.success)
     except Exception:

@@ -1,17 +1,22 @@
 from django.db import models
 
 
-class FavoriteUser(models.Model):
-    profile = models.ForeignKey(
-        to='UserProfile',
-        on_delete=models.CASCADE,
-        verbose_name='User profile',
+class FavouriteUser(models.Model):
+    user_id = models.PositiveIntegerField(
+        verbose_name='user ID',
+        unique=True,
+        null=False,
+    )
+
+    favourite_user_id = models.PositiveIntegerField(
+        verbose_name='favourite user telegram ID',
+        unique=True,
         null=False,
     )
 
     def __str__(self):
-        return f"{self.profile}"
+        return f"{self.user_id}"
 
     class Meta:
-        verbose_name = 'Favorite user'
-        verbose_name_plural = 'Favorite users'
+        verbose_name = 'Favourite user'
+        verbose_name_plural = 'Favourite users'

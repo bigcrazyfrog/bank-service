@@ -10,7 +10,7 @@ commands = [
     ('me', me),
     ('balance', balance),
     ('accountlist', account_list),
-    ('cardlist', card_list),
+    ('card_list', card_list),
     ('help', help)
 ]
 

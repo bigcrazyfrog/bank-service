@@ -21,7 +21,7 @@ class BankAccount:
             return False
 
 
-class BankCard:
+class CardService:
     @staticmethod
     def get_list(telegram_id):
         card_numbers = Card.objects.filter(account__user_profile__telegram_id=telegram_id).values('number')
