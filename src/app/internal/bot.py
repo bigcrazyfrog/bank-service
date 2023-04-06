@@ -27,7 +27,6 @@ def bot_polling():
     update_handlers(application)
 
     application.run_polling()
-    updater.idle()
 
 
 def bot_webhook():
@@ -41,4 +40,3 @@ def bot_webhook():
         url_path=BOT_TOKEN,
         webhook_url=f'https://nikita.backend23.2tapp.cc/{BOT_TOKEN}',
     )
-    updater.idle()
