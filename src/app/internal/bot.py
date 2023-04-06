@@ -51,7 +51,8 @@ def bot_webhook():
     update_handlers(application)
 
     application.run_webhook(
-        listen='51.250.97.80',
-        port=8443,
-        webhook_url='https://51.250.97.80:8443/',
+        listen='0.0.0.0',
+        port=3228,
+        url_path=BOT_TOKEN,
+        webhook_url=f'https://nikita.backend23.2tapp.cc/{BOT_TOKEN}',
     )
