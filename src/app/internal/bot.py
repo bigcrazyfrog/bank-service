@@ -37,8 +37,8 @@ def bot_webhook():
 
     application.run_webhook(
         listen='0.0.0.0',
-        port=8443,
+        port=3228,
         url_path=BOT_TOKEN,
-        webhook_url=f'https://nikita.backend23.2tapp.cc:8443/{BOT_TOKEN}',
+        webhook_url=f'https://nikita.backend23.2tapp.cc/{BOT_TOKEN}',
     )
     updater.idle()
