@@ -10,7 +10,7 @@ build:
 	docker build -t bot-app:1 .
 
 down:
-	docker compose down
+	docker compose down --remove-orphans
 
 up:
 	docker compose up -d
