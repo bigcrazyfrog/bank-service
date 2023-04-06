@@ -5,7 +5,7 @@ from telegram.ext import ContextTypes, ConversationHandler
 
 from app.internal.services.account_card_service import BankAccount, CardService
 from app.internal.services.transactions_service import TransactionService
-from app.internal.services.user_service import User, log_errors, FavouriteUserService
+from app.internal.services.user_service import FavouriteUserService, User, log_errors
 
 from . import static_text as st
 
@@ -306,4 +306,3 @@ def del_from_favorite(update: Update, context: ContextTypes.DEFAULT_TYPE):
         send_message(update, context, st.user_was_delete)
     else:
         send_message(update, context, st.user_not_found)
-
