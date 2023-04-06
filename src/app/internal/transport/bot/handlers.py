@@ -5,9 +5,8 @@ from telegram.ext import ContextTypes, ConversationHandler
 
 from app.internal.services.account_card_service import BankAccount, CardService
 from app.internal.services.transactions_service import TransactionService
-from app.internal.services.user_service import User, log_errors
+from app.internal.services.user_service import User, log_errors, FavouriteUserService
 
-from ...models.account_card import Account, Card
 from . import static_text as st
 
 
@@ -129,7 +128,7 @@ def card_number_enter(update: Update, context: ContextTypes.DEFAULT_TYPE):
     try:
         int(card)
     except Exception:
-        send_message(update, context, st.incorrect_card, context.user_data["last_keyboard"])
+        send_message(update, context, st.incorrect_input, context.user_data["last_keyboard"])
         return 0
 
     if not CardService.is_exist(card, update.effective_chat.id):
@@ -152,7 +151,7 @@ def amount_enter(update: Update, context: ContextTypes.DEFAULT_TYPE):
         if amount <= 0:
             raise ValueError
     except Exception:
-        send_message(update, context, st.incorrect_card)
+        send_message(update, context, st.incorrect_input)
         return 1
 
     if amount > CardService.balance(update.effective_chat.id, context.user_data["from_card"]):
@@ -176,7 +175,17 @@ def amount_enter(update: Update, context: ContextTypes.DEFAULT_TYPE):
 def translation_type(update: Update, context: ContextTypes.DEFAULT_TYPE):
     match update.message.text:
         case "🆔 Telegram ID":
-            send_message(update, context, st.send_to_telegram_id)
+            reply_keyboard = []
+            for user in FavouriteUserService.get_list(update.effective_chat.id):
+                reply_keyboard.append([user])
+
+            if len(reply_keyboard) > 0:
+                markup = ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True)
+                context.user_data["last_keyboard"] = markup
+
+                send_message(update, context, st.send_to_telegram_id, markup)
+            else:
+                send_message(update, context, st.send_to_telegram_id)
             return 4
         case "📝 Счет в банке":
             send_message(update, context, st.send_to_bank_account)
@@ -185,7 +194,7 @@ def translation_type(update: Update, context: ContextTypes.DEFAULT_TYPE):
             send_message(update, context, st.send_to_card_number)
             return 3
 
-    send_message(update, context, st.incorrect_card, context.user_data["last_keyboard"])
+    send_message(update, context, st.incorrect_input, context.user_data["last_keyboard"])
     return 2
 
 
@@ -255,3 +264,46 @@ def cancel(update: Update, context: ContextTypes.DEFAULT_TYPE):
     send_message(update, context, st.cancelled)
 
     return ConversationHandler.END
+
+
+@log_errors
+@sync_to_async
+def favorite_list(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    favorite_users = FavouriteUserService.get_list(update.effective_chat.id)
+    text = st.favorite_no_list
+
+    if favorite_users:
+        text = st.favorite_list + '\n'.join(favorite_users)
+
+    send_message(update, context, text)
+
+
+@log_errors
+@sync_to_async
+def add_favorite(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    favorite_user = 0
+    try:
+        favorite_user = int(update.message.text.split()[1])
+    except Exception:
+        send_message(update, context, st.incorrect_input)
+
+    if FavouriteUserService.add(update.effective_chat.id, favorite_user):
+        send_message(update, context, st.user_was_add)
+    else:
+        send_message(update, context, st.user_not_found)
+
+
+@log_errors
+@sync_to_async
+def del_from_favorite(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    favorite_user = 0
+    try:
+        favorite_user = int(update.message.text.split()[1])
+    except Exception:
+        send_message(update, context, st.incorrect_input)
+
+    if FavouriteUserService.delete(update.effective_chat.id, favorite_user):
+        send_message(update, context, st.user_was_delete)
+    else:
+        send_message(update, context, st.user_not_found)
+
