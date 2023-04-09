@@ -9,11 +9,19 @@ class Account(models.Model):
         null=False,
     )
 
-    user_profile = models.ForeignKey(
-        to='UserProfile',
-        on_delete=models.SET_NULL,
+    owner = models.ForeignKey(
         verbose_name='User profile',
+        to='User',
+        on_delete=models.SET_NULL,
         null=True,
+    )
+
+    balance = models.DecimalField(
+        verbose_name='Balance',
+        max_digits=12,
+        decimal_places=2,
+        null=False,
+        default=0,
     )
 
     def __str__(self):
@@ -37,12 +45,6 @@ class Card(models.Model):
         on_delete=models.CASCADE,
         verbose_name='Account number',
         null=False,
-    )
-
-    balance = models.BigIntegerField(
-        verbose_name='Balance',
-        null=False,
-        default=0,
     )
 
     def __str__(self):

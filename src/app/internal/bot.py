@@ -12,9 +12,6 @@ commands = [
     ('accountlist', account_list),
     ('card_list', card_list),
     ('help', help),
-    ('favorite_list', favorite_list),
-    ('add_favorite', add_favorite),
-    ('del_from_favorite', del_from_favorite),
 ]
 
 

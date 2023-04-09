@@ -3,9 +3,8 @@ from asgiref.sync import async_to_sync, sync_to_async
 from telegram import ReplyKeyboardMarkup, ReplyKeyboardRemove, Update
 from telegram.ext import ContextTypes, ConversationHandler
 
-from app.internal.services.account_card_service import BankAccount, CardService
-from app.internal.services.transactions_service import TransactionService
-from app.internal.services.user_service import FavouriteUserService, User, log_errors
+from app.internal.services.account_card_service import AccountService, CardService
+from app.internal.services.user_service import UserService, log_errors
 
 from . import static_text as st
 
@@ -25,7 +24,7 @@ def send_message(update: Update, context: ContextTypes.DEFAULT_TYPE, text: str, 
 @log_errors
 @sync_to_async
 def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    User.new_user(telegram_id=update.effective_chat.id)
+    UserService.new_user(telegram_id=update.effective_chat.id)
 
     send_message(update, context, st.welcome)
 
@@ -42,7 +41,7 @@ def set_phone(update: Update, context: ContextTypes.DEFAULT_TYPE):
     text = st.success
 
     try:
-        User.update_phone(update.effective_chat.id, context.args[0])
+        UserService.update_phone(update.effective_chat.id, context.args[0])
     except (IndexError, ValueError):
         text = st.incorrect
 
@@ -52,7 +51,7 @@ def set_phone(update: Update, context: ContextTypes.DEFAULT_TYPE):
 @log_errors
 @sync_to_async
 def me(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    user = User.info(update.effective_chat.id)
+    user = UserService.info(update.effective_chat.id)
 
     number = user['phone_number']
     text = st.info + st.line
@@ -69,10 +68,10 @@ def me(update: Update, context: ContextTypes.DEFAULT_TYPE):
 def balance(update: Update, context: ContextTypes.DEFAULT_TYPE):
     text = st.account_not_find
     try:
-        card_balance = CardService.balance(update.effective_chat.id, context.args[0])
+        account_balance = AccountService.balance(update.effective_chat.id, context.args[0])
 
-        if not (card_balance is None):
-            text = st.balance + str(card_balance)
+        if not (account_balance is None):
+            text = st.balance + str(account_balance)
     except (IndexError, ValueError):
         text = st.incorrect
 
@@ -82,7 +81,7 @@ def balance(update: Update, context: ContextTypes.DEFAULT_TYPE):
 @log_errors
 @sync_to_async
 def account_list(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    numbers = BankAccount.get_list(update.effective_chat.id)
+    numbers = AccountService.get_list(update.effective_chat.id)
     text = st.balance_not_exist
 
     if numbers:
@@ -123,19 +122,20 @@ def send_money(update: Update, context: ContextTypes.DEFAULT_TYPE):
 @log_errors
 @sync_to_async
 def card_number_enter(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    card = update.message.text
+    card_number = update.message.text
 
     try:
-        int(card)
+        int(card_number)
     except Exception:
         send_message(update, context, st.incorrect_input, context.user_data["last_keyboard"])
         return 0
 
-    if not CardService.is_exist(card, update.effective_chat.id):
+    account = CardService.get_account(card_number, update.effective_chat.id)
+    if account is None:
         send_message(update, context, st.not_found, context.user_data["last_keyboard"])
         return 0
 
-    context.user_data["from_card"] = card
+    context.user_data["from_account"] = str(account.number)
     send_message(update, context, st.enter_amount)
 
     return 1
@@ -154,7 +154,7 @@ def amount_enter(update: Update, context: ContextTypes.DEFAULT_TYPE):
         send_message(update, context, st.incorrect_input)
         return 1
 
-    if amount > CardService.balance(update.effective_chat.id, context.user_data["from_card"]):
+    if amount > AccountService.balance(update.effective_chat.id, context.user_data["from_account"]):
         send_message(update, context, st.no_money)
         return 1
 
@@ -175,17 +175,7 @@ def amount_enter(update: Update, context: ContextTypes.DEFAULT_TYPE):
 def translation_type(update: Update, context: ContextTypes.DEFAULT_TYPE):
     match update.message.text:
         case "🆔 Telegram ID":
-            reply_keyboard = []
-            for user in FavouriteUserService.get_list(update.effective_chat.id):
-                reply_keyboard.append([user])
-
-            if len(reply_keyboard) > 0:
-                markup = ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True)
-                context.user_data["last_keyboard"] = markup
-
-                send_message(update, context, st.send_to_telegram_id, markup)
-            else:
-                send_message(update, context, st.send_to_telegram_id)
+            send_message(update, context, st.send_to_telegram_id)
             return 4
         case "📝 Счет в банке":
             send_message(update, context, st.send_to_bank_account)
@@ -201,21 +191,22 @@ def translation_type(update: Update, context: ContextTypes.DEFAULT_TYPE):
 @log_errors
 @sync_to_async
 def to_card(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    card = update.message.text
-    if not CardService.is_exist(card):
+    account = CardService.get_account(update.message.text)
+    if account is None:
         send_message(update, context, st.not_found)
         return 3
 
-    if card == context.user_data["from_card"]:
+    if account.number == context.user_data["from_account"]:
         send_message(update, context, st.pitiful_attempt)
         return 3
 
     try:
-        TransactionService.to_card(context.user_data["from_card"], card,
-                                   context.user_data["amount"])
+        AccountService.send_money(context.user_data["from_account"], account.number,
+                                  context.user_data["amount"])
 
-        send_message(update, context, st.success)
+        send_message(update, context, st.successful)
     except Exception:
+        print(Exception)
         send_message(update, context, st.error)
 
     return ConversationHandler.END
@@ -227,14 +218,14 @@ def to_telegram_id(update: Update, context: ContextTypes.DEFAULT_TYPE):
     telegram_id = update.message.text
 
     try:
-        TransactionService.to_telegram_id(context.user_data["from_card"],
-                                          telegram_id, context.user_data["amount"])
+        AccountService.send_money_by_id(context.user_data["from_account"],
+                                        telegram_id, context.user_data["amount"])
 
-        send_message(update, context, st.success)
+        send_message(update, context, st.successful)
+        return ConversationHandler.END
     except Exception:
-        send_message(update, context, st.error)
-
-    return ConversationHandler.END
+        send_message(update, context, st.user_not_fount)
+        return 4
 
 
 @log_errors
@@ -242,15 +233,15 @@ def to_telegram_id(update: Update, context: ContextTypes.DEFAULT_TYPE):
 def to_bank_account(update: Update, context: ContextTypes.DEFAULT_TYPE):
     account = update.message.text
 
-    if not BankAccount.is_exist(account):
+    if not AccountService.exist(account):
         send_message(update, context, st.incorrect_account)
         return 5
 
     try:
-        TransactionService.to_bank_account(context.user_data["from_card"],
-                                           update.message.text, context.user_data["amount"])
+        AccountService.send_money(context.user_data["from_account"],
+                                  update.message.text, context.user_data["amount"])
 
-        send_message(update, context, st.success)
+        send_message(update, context, st.successful)
     except Exception:
         send_message(update, context, st.error)
 
@@ -264,45 +255,3 @@ def cancel(update: Update, context: ContextTypes.DEFAULT_TYPE):
     send_message(update, context, st.cancelled)
 
     return ConversationHandler.END
-
-
-@log_errors
-@sync_to_async
-def favorite_list(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    favorite_users = FavouriteUserService.get_list(update.effective_chat.id)
-    text = st.favorite_no_list
-
-    if favorite_users:
-        text = st.favorite_list + '\n'.join(favorite_users)
-
-    send_message(update, context, text)
-
-
-@log_errors
-@sync_to_async
-def add_favorite(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    favorite_user = 0
-    try:
-        favorite_user = int(update.message.text.split()[1])
-    except Exception:
-        send_message(update, context, st.incorrect_input)
-
-    if FavouriteUserService.add(update.effective_chat.id, favorite_user):
-        send_message(update, context, st.user_was_add)
-    else:
-        send_message(update, context, st.user_not_found)
-
-
-@log_errors
-@sync_to_async
-def del_from_favorite(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    favorite_user = 0
-    try:
-        favorite_user = int(update.message.text.split()[1])
-    except Exception:
-        send_message(update, context, st.incorrect_input)
-
-    if FavouriteUserService.delete(update.effective_chat.id, favorite_user):
-        send_message(update, context, st.user_was_delete)
-    else:
-        send_message(update, context, st.user_not_found)
