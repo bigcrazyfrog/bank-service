@@ -52,3 +52,39 @@ class UserService:
             pass
 
         return user_info
+
+    @staticmethod
+    def get_favorite_list(user_id):
+        user = User.objects.get(id=user_id)
+
+        favorite_list = []
+        for favorite_user in user.favorite_users.all():
+            favorite_list.append(favorite_user.id)
+
+        return favorite_list
+
+    @staticmethod
+    def add_favorite(user_id, favorite_user_id):
+        try:
+            user = User.objects.get(id=user_id)
+            favorite_user = User.objects.get(id=favorite_user_id)
+        except User.DoesNotExist:
+            return False
+
+        user.favorite_users.add(favorite_user)
+        user.save()
+
+        return True
+
+    @staticmethod
+    def remove_favorite(user_id, favorite_user_id):
+        try:
+            user = User.objects.get(id=user_id)
+            favorite_user = user.favorite_users.get(id=favorite_user_id)
+        except User.DoesNotExist:
+            return False
+
+        user.favorite_users.remove(favorite_user)
+        user.save()
+
+        return True

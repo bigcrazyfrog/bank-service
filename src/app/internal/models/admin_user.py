@@ -21,6 +21,12 @@ class User(models.Model):
         default=None,
     )
 
+    favorite_users = models.ManyToManyField(
+        to='self',
+        verbose_name='favorite users list',
+        symmetrical=False,
+    )
+
     def __str__(self):
         return f"{self.id}"
 

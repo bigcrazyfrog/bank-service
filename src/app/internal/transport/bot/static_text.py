@@ -44,7 +44,7 @@ cancelled = "❌️ Операция отменена"
 
 # favorite users list
 user_not_found = "Пользователь не найден"
-user_was_delete = "Пользователь удален из избранного"
+user_was_remove = "Пользователь удален из избранного"
 user_was_add = "Пользователь добавлен в избранное"
 favorite_list = "⭐ <b>Избранный список</b>\n\n"
 favorite_no_list = "Еще нет пользователей в избранном"

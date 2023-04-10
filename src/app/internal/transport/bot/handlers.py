@@ -255,3 +255,44 @@ def cancel(update: Update, context: ContextTypes.DEFAULT_TYPE):
     send_message(update, context, st.cancelled)
 
     return ConversationHandler.END
+
+
+@log_errors
+@sync_to_async
+def favorite_list(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    favorite_users = UserService.get_favorite_list(update.effective_chat.id)
+
+    if favorite_users:
+        text = st.favorite_list + '\n'.join(favorite_users)
+    else:
+        text = st.favorite_no_list
+
+    send_message(update, context, text)
+
+
+@log_errors
+@sync_to_async
+def add_favorite(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    text = st.user_not_found
+
+    try:
+        if UserService.add_favorite(update.effective_chat.id, context.args[0]):
+            text = st.user_was_add
+    except IndexError:
+        text = st.incorrect_input
+
+    send_message(update, context, text)
+
+
+@log_errors
+@sync_to_async
+def remove_favorite(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    text = st.user_not_found
+
+    try:
+        if UserService.remove_favorite(update.effective_chat.id, context.args[0]):
+            text = st.user_was_remove
+    except IndexError:
+        text = st.incorrect_input
+
+    send_message(update, context, text)
