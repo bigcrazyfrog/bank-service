@@ -10,7 +10,7 @@ class User(models.Model):
     id = models.CharField(
         verbose_name='telegram ID',
         primary_key=True,
-        max_length = 255,
+        max_length=255,
     )
 
     phone_number = models.CharField(

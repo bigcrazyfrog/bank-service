@@ -1,12 +1,8 @@
-import pytest
 from unittest.mock import MagicMock
 
+import pytest
 from telegram.ext import ApplicationBuilder
 
-
-# @pytest.fixture(scope="function")
-# def bot_app():
-#     return ApplicationBuilder().build()
 
 @pytest.fixture(scope="function")
 def update():
@@ -14,6 +10,7 @@ def update():
     mock.effective_chat.id = "1111111111"
 
     return mock
+
 
 @pytest.fixture(scope="function")
 def context():

@@ -1,5 +1,7 @@
 import pytest
 
+
+@pytest.mark.unit
 @pytest.mark.django_db
 def test_new_user_info(user_service, new_user):
     user = new_user()
@@ -10,6 +12,7 @@ def test_new_user_info(user_service, new_user):
     assert info['phone_number'] == user.phone_number
 
 
+@pytest.mark.unit
 @pytest.mark.django_db
 def test_no_exist_user_info(user_service):
     info = user_service.info("1")
@@ -19,6 +22,7 @@ def test_no_exist_user_info(user_service):
     assert info['phone_number'] is None
 
 
+@pytest.mark.unit
 @pytest.mark.django_db
 def test_favorite_add(user_service, new_user):
     first_user = new_user("1")
@@ -38,6 +42,7 @@ def test_favorite_add(user_service, new_user):
     assert favorite_list == [second_user.id, third_user.id]
 
 
+@pytest.mark.unit
 @pytest.mark.django_db
 def test_favorite_add_incorrect(user_service, new_user):
     first_user = new_user("1")
@@ -49,6 +54,7 @@ def test_favorite_add_incorrect(user_service, new_user):
     assert favorite_list == []
 
 
+@pytest.mark.unit
 @pytest.mark.django_db
 def test_favorite_add_double(user_service, new_user):
     first_user = new_user("1")
@@ -63,6 +69,7 @@ def test_favorite_add_double(user_service, new_user):
     assert favorite_list == [second_user.id]
 
 
+@pytest.mark.unit
 @pytest.mark.django_db
 def test_favorite_remove(user_service, new_user):
     first_user = new_user("1")

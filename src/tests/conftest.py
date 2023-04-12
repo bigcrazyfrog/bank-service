@@ -10,13 +10,16 @@ from app.internal.services.user_service import UserService
 def user_service():
     return UserService()
 
+
 @pytest.fixture(scope="function")
 def account_service():
     return AccountService()
 
+
 @pytest.fixture(scope="function")
 def card_service():
     return CardService()
+
 
 @pytest.fixture(scope="function")
 def new_user():
@@ -25,12 +28,14 @@ def new_user():
 
     return create
 
+
 @pytest.fixture(scope="function")
 def new_account():
     def create(number, owner, balance=100):
         return Account.objects.create(number=number, owner=owner, balance=balance)
 
     return create
+
 
 @pytest.fixture(scope="function")
 def new_card():
