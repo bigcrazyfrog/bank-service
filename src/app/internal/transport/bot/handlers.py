@@ -22,7 +22,6 @@ def send_message(update: Update, context: ContextTypes.DEFAULT_TYPE, text: str, 
 
 
 @log_errors
-@sync_to_async
 def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     UserService.new_user(telegram_id=update.effective_chat.id)
 
@@ -30,13 +29,11 @@ def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 @log_errors
-@sync_to_async
 def help(update: Update, context: ContextTypes.DEFAULT_TYPE):
     send_message(update, context, st.help)
 
 
 @log_errors
-@sync_to_async
 def set_phone(update: Update, context: ContextTypes.DEFAULT_TYPE):
     text = st.success
 
@@ -49,7 +46,6 @@ def set_phone(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 @log_errors
-@sync_to_async
 def me(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user = UserService.info(update.effective_chat.id)
 
@@ -64,7 +60,6 @@ def me(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 @log_errors
-@sync_to_async
 def balance(update: Update, context: ContextTypes.DEFAULT_TYPE):
     text = st.account_not_find
     try:
@@ -79,7 +74,6 @@ def balance(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 @log_errors
-@sync_to_async
 def account_list(update: Update, context: ContextTypes.DEFAULT_TYPE):
     numbers = AccountService.get_list(update.effective_chat.id)
     text = st.balance_not_exist
@@ -91,7 +85,6 @@ def account_list(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 @log_errors
-@sync_to_async
 def card_list(update: Update, context: ContextTypes.DEFAULT_TYPE):
     numbers = CardService.get_list(update.effective_chat.id)
 
@@ -104,7 +97,6 @@ def card_list(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 @log_errors
-@sync_to_async
 def send_money(update: Update, context: ContextTypes.DEFAULT_TYPE):
     cards = CardService.get_list(update.effective_chat.id)
 
@@ -120,7 +112,6 @@ def send_money(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 @log_errors
-@sync_to_async
 def card_number_enter(update: Update, context: ContextTypes.DEFAULT_TYPE):
     card_number = update.message.text
 
@@ -142,7 +133,6 @@ def card_number_enter(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 @log_errors
-@sync_to_async
 def amount_enter(update: Update, context: ContextTypes.DEFAULT_TYPE):
     amount = update.message.text
 
@@ -171,7 +161,6 @@ def amount_enter(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 @log_errors
-@sync_to_async
 def translation_type(update: Update, context: ContextTypes.DEFAULT_TYPE):
     match update.message.text:
         case "🆔 Telegram ID":
@@ -189,7 +178,6 @@ def translation_type(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 @log_errors
-@sync_to_async
 def to_card(update: Update, context: ContextTypes.DEFAULT_TYPE):
     account = CardService.get_account(update.message.text)
     if account is None:
@@ -213,7 +201,6 @@ def to_card(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 @log_errors
-@sync_to_async
 def to_telegram_id(update: Update, context: ContextTypes.DEFAULT_TYPE):
     telegram_id = update.message.text
 
@@ -229,7 +216,6 @@ def to_telegram_id(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 @log_errors
-@sync_to_async
 def to_bank_account(update: Update, context: ContextTypes.DEFAULT_TYPE):
     account = update.message.text
 
@@ -249,7 +235,6 @@ def to_bank_account(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 @log_errors
-@sync_to_async
 def cancel(update: Update, context: ContextTypes.DEFAULT_TYPE):
     context.user_data.clear()
     send_message(update, context, st.cancelled)
@@ -258,7 +243,6 @@ def cancel(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 @log_errors
-@sync_to_async
 def favorite_list(update: Update, context: ContextTypes.DEFAULT_TYPE):
     favorite_users = UserService.get_favorite_list(update.effective_chat.id)
 
@@ -271,7 +255,6 @@ def favorite_list(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 @log_errors
-@sync_to_async
 def add_favorite(update: Update, context: ContextTypes.DEFAULT_TYPE):
     text = st.user_not_found
 
@@ -285,7 +268,6 @@ def add_favorite(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 @log_errors
-@sync_to_async
 def remove_favorite(update: Update, context: ContextTypes.DEFAULT_TYPE):
     text = st.user_not_found
 

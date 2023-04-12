@@ -14,6 +14,7 @@ black = "~=21.12b0"
 psycopg2 = "*"
 unknown = {editable = true, path = "."}
 python-telegram-bot = {extras = ["webhooks"], version = "*"}
+pytest = "*"
 
 [requires]
 python_version = "3.10"

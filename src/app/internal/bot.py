@@ -5,16 +5,16 @@ from config.settings import BOT_TOKEN
 from .transport.bot.handlers import *
 
 commands = [
-    ('start', start),
-    ('setphone', set_phone),
-    ('me', me),
-    ('balance', balance),
-    ('accountlist', account_list),
-    ('card_list', card_list),
-    ('help', help),
-    ('favorite_list', favorite_list),
-    ('add_favorite', add_favorite),
-    ('remove_favorite', remove_favorite),
+    ('start', sync_to_async(start)),
+    ('setphone', sync_to_async(set_phone)),
+    ('me', sync_to_async(me)),
+    ('balance', sync_to_async(balance)),
+    ('accountlist', sync_to_async(account_list)),
+    ('card_list', sync_to_async(card_list)),
+    ('help', sync_to_async(help)),
+    ('favorite_list', sync_to_async(favorite_list)),
+    ('add_favorite', sync_to_async(add_favorite)),
+    ('remove_favorite', sync_to_async(remove_favorite)),
 ]
 
 
@@ -23,16 +23,16 @@ def update_handlers(application):
         application.add_handler(CommandHandler(*command))
 
     conv_handler = ConversationHandler(
-        entry_points=[CommandHandler("send_money", send_money)],
+        entry_points=[CommandHandler("send_money", sync_to_async(send_money))],
         states={
-            0: [MessageHandler(filters.TEXT & ~filters.COMMAND, card_number_enter)],
-            1: [MessageHandler(filters.TEXT & ~filters.COMMAND, amount_enter)],
-            2: [MessageHandler(filters.TEXT & ~filters.COMMAND, translation_type)],
-            3: [MessageHandler(filters.TEXT & ~filters.COMMAND, to_card)],
-            4: [MessageHandler(filters.TEXT & ~filters.COMMAND, to_telegram_id)],
-            5: [MessageHandler(filters.TEXT & ~filters.COMMAND, to_bank_account)],
+            0: [MessageHandler(filters.TEXT & ~filters.COMMAND, sync_to_async(card_number_enter))],
+            1: [MessageHandler(filters.TEXT & ~filters.COMMAND, sync_to_async(amount_enter))],
+            2: [MessageHandler(filters.TEXT & ~filters.COMMAND, sync_to_async(translation_type))],
+            3: [MessageHandler(filters.TEXT & ~filters.COMMAND, sync_to_async(to_card))],
+            4: [MessageHandler(filters.TEXT & ~filters.COMMAND, sync_to_async(to_telegram_id))],
+            5: [MessageHandler(filters.TEXT & ~filters.COMMAND, sync_to_async(to_bank_account))],
         },
-        fallbacks=[CommandHandler("cancel", cancel)],
+        fallbacks=[CommandHandler("cancel", sync_to_async(cancel))],
     )
 
     application.add_handler(conv_handler)
