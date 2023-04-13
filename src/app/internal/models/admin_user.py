@@ -6,11 +6,11 @@ class AdminUser(AbstractUser):
     pass
 
 
-class UserProfile(models.Model):
-    telegram_id = models.PositiveIntegerField(
+class User(models.Model):
+    id = models.CharField(
         verbose_name='telegram ID',
-        unique=True,
-        null=False,
+        primary_key=True,
+        max_length=255,
     )
 
     phone_number = models.CharField(
@@ -21,8 +21,14 @@ class UserProfile(models.Model):
         default=None,
     )
 
+    favorite_users = models.ManyToManyField(
+        to='self',
+        verbose_name='favorite users list',
+        symmetrical=False,
+    )
+
     def __str__(self):
-        return f"{self.telegram_id}"
+        return f"{self.id}"
 
     class Meta:
         verbose_name = 'Profile'

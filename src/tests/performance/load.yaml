@@ -1,0 +1,26 @@
+overload:
+  enabled: true
+  package: yandextank.plugins.DataUploader
+  token_file: "token.txt"
+phantom:
+  address: nikita.backend23.2tapp.cc:443
+  header_http: "1.1"
+  headers:
+    - "[Host: https://nikita.backend23.2tapp.cc]"
+    - "[Connection: close]"
+  uris:
+    - /admin/
+    - /api/userinfo/111111/
+    - /api/userinfo/1974333349/
+    - /
+  load_profile:
+    load_type: rps
+    schedule: line(5, 30, 1m)
+  ssl: true
+autostop:
+  autostop:
+    - http(5xx, 10%, 5s)
+console:
+  enabled: true
+telegraf:
+  enabled: false

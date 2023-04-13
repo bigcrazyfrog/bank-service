@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 
-from app.internal.models.admin_user import AdminUser, UserProfile
+from app.internal.models.admin_user import AdminUser, User
 
 
 @admin.register(AdminUser)
@@ -9,6 +9,6 @@ class AdminUserAdmin(UserAdmin):
     pass
 
 
-@admin.register(UserProfile)
+@admin.register(User)
 class ProfileAdmin(admin.ModelAdmin):
-    list_display = ('id', 'telegram_id', 'phone_number')
+    list_display = ('id', 'phone_number')
