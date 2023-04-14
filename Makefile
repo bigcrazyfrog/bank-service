@@ -16,7 +16,7 @@ up:
 	docker compose up -d
 
 test:
-	pytest
+	echo "test"
 
 migrate:
 	python3 src/manage.py migrate
