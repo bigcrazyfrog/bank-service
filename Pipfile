@@ -11,8 +11,8 @@ django-environ = "~=0.8"
 black = "~=21.12b0"
 isort = "~=5.10"
 flake8 = "~=4.0"
-python-telegram-bot = "*"
 pytest = "*"
+python-telegram-bot = {extras = ["webhooks"], version = "*"}
 
 [requires]
 python_version = "3.10"
