@@ -4,16 +4,14 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 
 [dev-packages]
-isort = "~=5.10"
-flake8 = "~=4.0"
 
 [packages]
 django = "~=4.0"
 django-environ = "~=0.8"
 black = "~=21.12b0"
-psycopg2 = "*"
-unknown = {editable = true, path = "."}
-python-telegram-bot = {extras = ["webhooks"], version = "*"}
+isort = "~=5.10"
+flake8 = "~=4.0"
+python-telegram-bot = "*"
 pytest = "*"
 
 [requires]
