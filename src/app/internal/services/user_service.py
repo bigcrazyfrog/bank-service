@@ -23,7 +23,7 @@ class UserService:
         User.objects.get_or_create(id=telegram_id)
 
     @staticmethod
-    def update_phone(telegram_id: str, phone:str) -> None:
+    def update_phone(telegram_id: str, phone: str) -> None:
         rule = re.compile(RE_NUMBER)
 
         if not rule.search(phone):
