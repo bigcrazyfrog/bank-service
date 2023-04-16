@@ -20,6 +20,21 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
+# env settings
+
+env = environ.Env(
+    # set casting, default value
+    DEBUG=(bool, False),
+    ALLOWED_HOSTS=(str, '127.0.0.1 .localhost'),
+)
+
+env.read_env(env.str('ENV_PATH', '.env'))
+
+DEBUG = env('DEBUG')
+ALLOWED_HOSTS = env('ALLOWED_HOSTS').split()
+BOT_TOKEN = env('BOT_TOKEN')
+SECRET_KEY = env('SECRET_KEY')
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -67,12 +82,15 @@ WSGI_APPLICATION = "config.wsgi.application"
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': env('POSTGRES_NAME'),
+        'USER': env('POSTGRES_USER'),
+        'PASSWORD': env('POSTGRES_PASSWORD'),
+        'HOST': env('POSTGRES_HOST'),
+        'PORT': env('POSTGRES_PORT'),
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
@@ -118,18 +136,3 @@ SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 AUTH_USER_MODEL = "app.AdminUser"
-
-# env settings
-
-env = environ.Env(
-    # set casting, default value
-    DEBUG=(bool, False),
-    ALLOWED_HOSTS=(str, '127.0.0.1 .localhost'),
-)
-
-env.read_env(env.str('ENV_PATH', '.env'))
-
-DEBUG = env('DEBUG')
-ALLOWED_HOSTS = env('ALLOWED_HOSTS').split()
-BOT_TOKEN = env('BOT_TOKEN')
-SECRET_KEY = env('SECRET_KEY')
