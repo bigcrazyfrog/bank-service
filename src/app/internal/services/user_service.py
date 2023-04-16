@@ -1,4 +1,5 @@
 import re
+from typing import List
 
 from app.internal.models.admin_user import User
 
@@ -18,11 +19,11 @@ def log_errors(f):
 
 class UserService:
     @staticmethod
-    def new_user(telegram_id):
+    def new_user(telegram_id: str) -> None:
         User.objects.get_or_create(id=telegram_id)
 
     @staticmethod
-    def update_phone(telegram_id, phone):
+    def update_phone(telegram_id: str, phone:str) -> None:
         rule = re.compile(RE_NUMBER)
 
         if not rule.search(phone):
@@ -34,7 +35,7 @@ class UserService:
         user.save(update_fields=["phone_number"])
 
     @staticmethod
-    def info(telegram_id):
+    def info(telegram_id: str) -> dict:
         user_info = dict(
             exist=False,
             id=None,
@@ -54,7 +55,7 @@ class UserService:
         return user_info
 
     @staticmethod
-    def get_favorite_list(user_id):
+    def get_favorite_list(user_id: str) -> List[User]:
         user = User.objects.get(id=user_id)
 
         favorite_list = []
@@ -64,7 +65,7 @@ class UserService:
         return favorite_list
 
     @staticmethod
-    def add_favorite(user_id, favorite_user_id):
+    def add_favorite(user_id: str, favorite_user_id: str) -> bool:
         try:
             user = User.objects.get(id=user_id)
             favorite_user = User.objects.get(id=favorite_user_id)
@@ -77,7 +78,7 @@ class UserService:
         return True
 
     @staticmethod
-    def remove_favorite(user_id, favorite_user_id):
+    def remove_favorite(user_id: str, favorite_user_id: str) -> bool:
         try:
             user = User.objects.get(id=user_id)
             favorite_user = user.favorite_users.get(id=favorite_user_id)

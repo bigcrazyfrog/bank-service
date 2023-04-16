@@ -9,7 +9,7 @@ from app.internal.services.user_service import UserService, log_errors
 from . import static_text as st
 
 
-def send_message(update: Update, context: ContextTypes.DEFAULT_TYPE, text: str, markup=None):
+def send_message(update: Update, context: ContextTypes.DEFAULT_TYPE, text: str, markup=None) -> None:
     if markup is None:
         markup = ReplyKeyboardRemove()
 
