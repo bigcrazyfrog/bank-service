@@ -13,6 +13,7 @@ isort = "~=5.10"
 flake8 = "~=4.0"
 pytest = "*"
 python-telegram-bot = {extras = ["webhooks"], version = "*"}
+psycopg2-binary = "*"
 
 [requires]
 python_version = "3.10"
