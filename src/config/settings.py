@@ -124,7 +124,7 @@ AUTH_USER_MODEL = "app.AdminUser"
 env = environ.Env(
     # set casting, default value
     DEBUG=(bool, False),
-    ALLOWED_HOSTS=(str, '127.0.0.1 .localhost'),
+    ALLOWED_HOSTS=(str, '127.0.0.1 localhost'),
 )
 
 env.read_env(env.str('ENV_PATH', '.env'))

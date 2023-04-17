@@ -1,6 +1,19 @@
 version: "3.9"
 
+volumes:
+  data:
+
 services:
+  db:
+    image: postgres:13.3
+    ports:
+      - "${POSTGRES_PORT}:${POSTGRES_PORT}"
+    build: ./src
+    env_file:
+      - .env
+    volumes:
+      - data:/var/lib/postgresql/data
+
   web:
     container_name: app
     image: ${IMAGE_NAME}
@@ -10,6 +23,8 @@ services:
     ports:
       - "${PORT}:${PORT}"
     command: python ./src/manage.py runserver 0.0.0.0:8000
+    depends_on:
+      - db
 
   bot:
     container_name: bot
@@ -20,3 +35,5 @@ services:
     ports:
       - "${BOT_PORT}:${BOT_PORT}"
     command: python ./src/manage.py bot
+    depends_on:
+      - db
