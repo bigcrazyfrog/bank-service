@@ -1,4 +1,5 @@
 from itertools import chain
+from random import randint
 
 from django.db import transaction
 from django.db.models import F, Q
@@ -7,6 +8,7 @@ import re
 from typing import List
 
 from app.internal.models.account_card import Account, Card
+from app.internal.models.admin_user import User
 from app.internal.models.transaction import Transaction
 
 RE_ACCOUNT = r'[0-9]{10}'
@@ -37,6 +39,15 @@ class AccountService:
             return account.balance
         except Account.DoesNotExist:
             raise ValueError
+
+    @staticmethod
+    def create_first(telegram_id: str) -> Account | None:
+        rand_number = randint(10 ** 10, 10 ** 11)
+        while Account.objects.filter(number=rand_number).exists():
+            rand_number = randint(10 ** 10, 10 ** 11)
+
+        user = User.objects.get(id=telegram_id)
+        return Account.objects.create(number=rand_number, owner=user)
 
     @staticmethod
     @transaction.non_atomic_requests()
@@ -97,3 +108,15 @@ class CardService:
             return card.account
         except Card.DoesNotExist:
             return None
+
+    @staticmethod
+    def create_first(telegram_id: str) -> Card | None:
+        if Card.objects.filter(account__owner__id=telegram_id).exists():
+            return None
+
+        rand_number = randint(10 ** 16, 10 ** 17)
+        while Card.objects.filter(number=rand_number).exists():
+            rand_number = randint(10 ** 16, 10 ** 17)
+
+        account = AccountService.create_first(telegram_id)
+        return Card.objects.create(number=rand_number, account=account)

@@ -290,11 +290,13 @@ def remove_favorite(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 @log_errors
 def transaction_history(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    text = st.not_found
-
+    text = st.interaction_not_found
     try:
         account = context.args[0]
         history = AccountService.transaction_history(update.effective_chat.id, account)
+
+        if len(history) == 0:
+            raise ValueError
 
         text = st.account_history
         last_date = None
@@ -332,5 +334,18 @@ def interaction_list(update: Update, context: ContextTypes.DEFAULT_TYPE):
         text = st.interaction_list
         for i, user in enumerate(interactions):
             text += f'{i + 1}. {user}\n'
+
+    send_message(update, context, text)
+
+
+@log_errors
+def create_first_account(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    card = CardService.create_first(update.effective_chat.id)
+
+    if card is None:
+        text = st.account_is_exist
+    else:
+        text = st.account_was_created + f'Номер счета - {card.account.number}\n' \
+                                        f'Номер карты - {card.number}'
 
     send_message(update, context, text)
