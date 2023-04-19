@@ -15,6 +15,8 @@ commands = [
     ('favorite_list', sync_to_async(favorite_list)),
     ('add_favorite', sync_to_async(add_favorite)),
     ('remove_favorite', sync_to_async(remove_favorite)),
+    ('history', sync_to_async(transaction_history)),
+    ('interaction', sync_to_async(interaction_list)),
 ]
 
 

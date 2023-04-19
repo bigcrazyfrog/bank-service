@@ -13,6 +13,14 @@ class User(models.Model):
         max_length=255,
     )
 
+    name = models.CharField(
+        verbose_name='username',
+        max_length=32,
+        null=True,
+        blank=True,
+        default=None,
+    )
+
     phone_number = models.CharField(
         verbose_name='phone number',
         max_length=12,
@@ -28,7 +36,7 @@ class User(models.Model):
     )
 
     def __str__(self):
-        return f"{self.id}"
+        return f"{self.name}"
 
     class Meta:
         verbose_name = 'Profile'
