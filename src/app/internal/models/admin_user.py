@@ -1,5 +1,17 @@
 from django.contrib.auth.models import AbstractUser
+from django.core.exceptions import ValidationError
 from django.db import models
+
+import re
+
+RE_NUMBER = r'(^[+0-9]{1,3})*([0-9]{10,11}$)'
+
+
+def validate_phone(phone_number: str) -> None:
+    rule = re.compile(RE_NUMBER)
+
+    if not rule.search(phone_number):
+        raise ValidationError("Incorrect phone number")
 
 
 class AdminUser(AbstractUser):
@@ -27,6 +39,7 @@ class User(models.Model):
         null=True,
         blank=True,
         default=None,
+        validators=[validate_phone],
     )
 
     favorite_users = models.ManyToManyField(

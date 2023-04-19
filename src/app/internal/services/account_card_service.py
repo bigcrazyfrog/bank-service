@@ -4,15 +4,11 @@ from random import randint
 from django.db import transaction
 from django.db.models import F, Q
 
-import re
 from typing import List
 
 from app.internal.models.account_card import Account, Card
 from app.internal.models.admin_user import User
 from app.internal.models.transaction import Transaction
-
-RE_ACCOUNT = r'[0-9]{10}'
-RE_CARD = r'[0-9]{16}'
 
 
 class AccountService:
@@ -29,11 +25,6 @@ class AccountService:
 
     @staticmethod
     def balance(telegram_id: str, number: int) -> float:
-        rule = re.compile(RE_ACCOUNT)
-
-        if not rule.search(number):
-            raise ValueError
-
         try:
             account = Account.objects.get(owner__id=telegram_id, number=number)
             return account.balance
@@ -50,19 +41,19 @@ class AccountService:
         return Account.objects.create(number=rand_number, owner=user)
 
     @staticmethod
-    @transaction.non_atomic_requests()
     def send_money(from_account: int, to_account: int, amount: float) -> None:
         if from_account == to_account:
             raise Exception("similar account")
 
-        account1 = Account.objects.get(number=from_account)
-        account2 = Account.objects.get(number=to_account)
+        with transaction.atomic():
+            account1 = Account.objects.get(number=from_account)
+            account2 = Account.objects.get(number=to_account)
 
-        account1.balance = F('balance') - amount
-        account2.balance = F('balance') + amount
+            account1.balance = F('balance') - amount
+            account2.balance = F('balance') + amount
 
-        account1.save(update_fields=('balance',))
-        account2.save(update_fields=('balance',))
+            account1.save(update_fields=('balance',))
+            account2.save(update_fields=('balance',))
 
         Transaction.objects.create(from_account=account1, to_account=account2, amount=amount)
 

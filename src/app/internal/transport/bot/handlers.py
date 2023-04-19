@@ -3,6 +3,8 @@ from asgiref.sync import async_to_sync, sync_to_async
 from telegram import ReplyKeyboardMarkup, ReplyKeyboardRemove, Update
 from telegram.ext import ContextTypes, ConversationHandler
 
+from django.core.exceptions import ValidationError
+
 from app.internal.services.account_card_service import AccountService, CardService
 from app.internal.services.user_service import UserService, log_errors
 
@@ -39,7 +41,7 @@ def set_phone(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     try:
         UserService.update_phone(update.effective_chat.id, context.args[0])
-    except (IndexError, ValueError):
+    except (IndexError, ValidationError):
         text = st.incorrect
 
     send_message(update, context, text)
