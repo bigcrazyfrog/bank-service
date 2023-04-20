@@ -6,7 +6,7 @@ from .transport.bot.handlers import *
 
 commands = [
     ('start', sync_to_async(start)),
-    ('setphone', sync_to_async(set_phone)),
+    ('set_phone', sync_to_async(set_phone)),
     ('me', sync_to_async(me)),
     ('balance', sync_to_async(balance)),
     ('account_list', sync_to_async(account_list)),
