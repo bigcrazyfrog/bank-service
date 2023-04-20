@@ -1,6 +1,7 @@
-from django.db import models
-from django.core.exceptions import ValidationError
 import re
+
+from django.core.exceptions import ValidationError
+from django.db import models
 
 RE_ACCOUNT = r'[1-9][0-9]{9}'
 RE_CARD = r'[1-9][0-9]{15}'
@@ -10,13 +11,14 @@ def validate_account(number: int) -> None:
     rule = re.compile(RE_ACCOUNT)
 
     if not rule.search(str(number)):
-        raise ValidationError("Incorrect account number")
+        raise ValidationError(f"Incorrect account number - {number}")
+
 
 def validate_card(number: int) -> None:
     rule = re.compile(RE_CARD)
 
     if not rule.search(str(number)):
-        raise ValidationError("Incorrect card number")
+        raise ValidationError(f"Incorrect card number - {number}")
 
 
 class Account(models.Model):

@@ -1,8 +1,8 @@
+import re
+
 from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
 from django.db import models
-
-import re
 
 RE_NUMBER = r'(^[+0-9]{1,3})*([0-9]{10,11}$)'
 
@@ -11,7 +11,7 @@ def validate_phone(phone_number: str) -> None:
     rule = re.compile(RE_NUMBER)
 
     if not rule.search(phone_number):
-        raise ValidationError("Incorrect phone number")
+        raise ValidationError(f"Incorrect phone number - {phone_number}")
 
 
 class AdminUser(AbstractUser):

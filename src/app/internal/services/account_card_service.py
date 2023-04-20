@@ -1,10 +1,9 @@
 from itertools import chain
 from random import randint
+from typing import List
 
 from django.db import transaction
 from django.db.models import F, Q
-
-from typing import List
 
 from app.internal.models.account_card import Account, Card
 from app.internal.models.admin_user import User
