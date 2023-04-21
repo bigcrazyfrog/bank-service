@@ -68,3 +68,4 @@ favorite_no_list = "Еще нет пользователей в избранно
 account_history = "📝 <b>История операций</b> 📝\n\n"
 interaction_list = "👥 <b>Недавние пользователи</b> \n\n"
 interaction_not_found = "Еще не было взаимодействий"
+

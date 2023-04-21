@@ -6,7 +6,7 @@ class Transaction(models.Model):
         verbose_name='From account',
         related_name='from_account',
         to='Account',
-        on_delete=models.SET_NULL,
+        on_delete=models.PROTECT,
         null=True,
     )
 
@@ -14,7 +14,7 @@ class Transaction(models.Model):
         verbose_name='To account',
         related_name='to_account',
         to='Account',
-        on_delete=models.SET_NULL,
+        on_delete=models.PROTECT,
         null=True,
     )
 

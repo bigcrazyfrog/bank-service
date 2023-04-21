@@ -69,6 +69,7 @@ class AccountService:
             raise ValueError
 
         return Transaction.objects.filter(Q(from_account=account) | Q(to_account=account))\
+            .select_related("from_account", "to_account")\
             .order_by('-date')
 
     @staticmethod
@@ -80,6 +81,10 @@ class AccountService:
             .values_list('from_account__owner__name', flat=True).distinct()
 
         return set(chain(incoming, outgoing))
+
+    @staticmethod
+    def get_owner_id(number: int):
+        return Account.objects.filter(number=number).values_list('owner__id', flat=True).first()
 
 
 class CardService:

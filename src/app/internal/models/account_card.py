@@ -33,7 +33,7 @@ class Account(models.Model):
     owner = models.ForeignKey(
         verbose_name='User profile',
         to='User',
-        on_delete=models.SET_NULL,
+        on_delete=models.CASCADE,
         null=True,
     )
 
