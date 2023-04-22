@@ -50,12 +50,7 @@ def set_phone(update: Update, context: ContextTypes.DEFAULT_TYPE):
 def me(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user = UserService.info(update.effective_chat.id)
 
-    number = user['phone_number']
-    text = st.info + st.line
-    text += f'🆔 Telegram ID : {update.effective_chat.id}\n 📞 Ваш номер : {number}' + st.line
-
-    if number is None:
-        text = st.not_exist
+    text = st.me(user)
 
     send_message(update, context, text)
 
@@ -296,30 +291,7 @@ def transaction_history(update: Update, context: ContextTypes.DEFAULT_TYPE):
         account = context.args[0]
         history = AccountService.transaction_history(update.effective_chat.id, account)
 
-        if len(history) == 0:
-            raise ValueError
-
-        text = st.account_history
-        last_date = None
-        for transaction in history:
-            date = transaction.date.strftime('%b %d')
-            if last_date != date:
-                last_date = date
-                text += f'[ {last_date} ]\n'
-
-            amount = transaction.amount
-            if amount == int(amount):
-                amount = int(amount)
-
-            if str(transaction.to_account.number) == account:
-                text += f"➡️ <b>Входящий перевод</b> + {amount}₽\n" \
-                        f"      От - {transaction.to_account.owner.name}, "
-            else:
-                text += f"💳 <b>Исходящий перевод</b> {amount}₽\n" \
-                        f"      Кому - {transaction.to_account.owner.name}, "
-
-            text += f'Время - {transaction.date.strftime("%H:%M")}\n\n'
-
+        text = st.transaction_history(history, account)
     except (IndexError, ValueError):
         pass
 

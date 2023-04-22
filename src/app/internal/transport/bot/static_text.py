@@ -69,3 +69,43 @@ account_history = "📝 <b>История операций</b> 📝\n\n"
 interaction_list = "👥 <b>Недавние пользователи</b> \n\n"
 interaction_not_found = "Еще не было взаимодействий"
 
+
+def me(user: dict) -> str:
+    number = user['phone_number']
+
+    if number is None:
+        return not_exist
+
+    text = info + line
+    text += f'🆔 Telegram ID : {user["id"]}\n ' \
+            f'📞 Ваш номер : {number}' + line
+
+    return text
+
+
+def transaction_history(history, account) -> str:
+    if len(history) == 0:
+        raise ValueError
+
+    text = account_history
+    last_date = None
+    for transaction in history:
+        date = transaction.date.strftime('%b %d')
+        if last_date != date:
+            last_date = date
+            text += f'[ {last_date} ]\n'
+
+        amount = transaction.amount
+        if amount == int(amount):
+            amount = int(amount)
+
+        if str(transaction.to_account.number) == account:
+            text += f"➡️ <b>Входящий перевод</b> + {amount}₽\n" \
+                    f"      От - {transaction.to_account.owner.name}, "
+        else:
+            text += f"💳 <b>Исходящий перевод</b> {amount}₽\n" \
+                    f"      Кому - {transaction.to_account.owner.name}, "
+
+        text += f'Время - {transaction.date.strftime("%H:%M")}\n\n'
+
+    return text
