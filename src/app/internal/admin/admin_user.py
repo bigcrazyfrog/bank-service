@@ -10,5 +10,5 @@ class AdminUserAdmin(UserAdmin):
 
 
 @admin.register(User)
-class ProfileAdmin(admin.ModelAdmin):
+class UserAdmin(admin.ModelAdmin):
     list_display = ('id', 'phone_number')

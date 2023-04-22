@@ -6,15 +6,18 @@ from .transport.bot.handlers import *
 
 commands = [
     ('start', sync_to_async(start)),
-    ('setphone', sync_to_async(set_phone)),
+    ('set_phone', sync_to_async(set_phone)),
     ('me', sync_to_async(me)),
     ('balance', sync_to_async(balance)),
-    ('accountlist', sync_to_async(account_list)),
+    ('account_list', sync_to_async(account_list)),
     ('card_list', sync_to_async(card_list)),
     ('help', sync_to_async(help)),
     ('favorite_list', sync_to_async(favorite_list)),
     ('add_favorite', sync_to_async(add_favorite)),
     ('remove_favorite', sync_to_async(remove_favorite)),
+    ('history', sync_to_async(transaction_history)),
+    ('interaction', sync_to_async(interaction_list)),
+    ('create_account', sync_to_async(create_first_account)),
 ]
 
 
