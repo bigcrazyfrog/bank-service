@@ -1,5 +1,6 @@
 import telegram
 from asgiref.sync import async_to_sync, sync_to_async
+from django.core.exceptions import ValidationError
 from telegram import ReplyKeyboardMarkup, ReplyKeyboardRemove, Update
 from telegram.ext import ContextTypes, ConversationHandler
 
@@ -23,7 +24,7 @@ def send_message(update: Update, context: ContextTypes.DEFAULT_TYPE, text: str, 
 
 @log_errors
 def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    UserService.new_user(telegram_id=update.effective_chat.id)
+    UserService.new_user(telegram_id=update.effective_chat.id, name=update.effective_chat.first_name)
 
     send_message(update, context, st.welcome)
 
@@ -39,7 +40,7 @@ def set_phone(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     try:
         UserService.update_phone(update.effective_chat.id, context.args[0])
-    except (IndexError, ValueError):
+    except (IndexError, ValidationError):
         text = st.incorrect
 
     send_message(update, context, text)
@@ -49,12 +50,7 @@ def set_phone(update: Update, context: ContextTypes.DEFAULT_TYPE):
 def me(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user = UserService.info(update.effective_chat.id)
 
-    number = user['phone_number']
-    text = st.info + st.line
-    text += f'🆔 Telegram ID : {update.effective_chat.id}\n 📞 Ваш номер : {number}' + st.line
-
-    if number is None:
-        text = st.not_exist
+    text = st.me(user)
 
     send_message(update, context, text)
 
@@ -64,11 +60,9 @@ def balance(update: Update, context: ContextTypes.DEFAULT_TYPE):
     text = st.account_not_find
     try:
         account_balance = AccountService.balance(update.effective_chat.id, context.args[0])
-
-        if not (account_balance is None):
-            text = st.balance + str(account_balance)
+        text = st.balance + str(account_balance)
     except (IndexError, ValueError):
-        text = st.incorrect
+        pass
 
     send_message(update, context, text)
 
@@ -79,7 +73,7 @@ def account_list(update: Update, context: ContextTypes.DEFAULT_TYPE):
     text = st.balance_not_exist
 
     if numbers:
-        text = st.account_list + '\n'.join(numbers)
+        text = st.account_list + '\n'.join([str(number) for number in numbers])
 
     send_message(update, context, text)
 
@@ -91,7 +85,7 @@ def card_list(update: Update, context: ContextTypes.DEFAULT_TYPE):
     text = st.balance_not_exist
 
     if numbers:
-        text = st.account_list + '\n'.join(numbers)
+        text = st.card_list + '\n'.join([str(number) for number in numbers])
 
     send_message(update, context, text)
 
@@ -102,7 +96,7 @@ def send_money(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     reply_keyboard = []
     for card in cards:
-        reply_keyboard.append([card])
+        reply_keyboard.append([str(card)])
 
     markup = ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True)
     context.user_data["last_keyboard"] = markup
@@ -193,9 +187,12 @@ def to_card(update: Update, context: ContextTypes.DEFAULT_TYPE):
                                   context.user_data["amount"])
 
         send_message(update, context, st.successful)
-    except Exception:
-        print(Exception)
-        send_message(update, context, st.error)
+    except Exception as e:
+        if str(e) == "similar account":
+            send_message(update, context, st.pitiful_attempt)
+        else:
+            send_message(update, context, st.error)
+            print(e)
 
     return ConversationHandler.END
 
@@ -210,8 +207,11 @@ def to_telegram_id(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
         send_message(update, context, st.successful)
         return ConversationHandler.END
-    except Exception:
-        send_message(update, context, st.user_not_fount)
+    except Exception as e:
+        if str(e) == "similar account":
+            send_message(update, context, st.pitiful_attempt)
+        else:
+            send_message(update, context, st.user_not_fount)
         return 4
 
 
@@ -228,8 +228,12 @@ def to_bank_account(update: Update, context: ContextTypes.DEFAULT_TYPE):
                                   update.message.text, context.user_data["amount"])
 
         send_message(update, context, st.successful)
-    except Exception:
-        send_message(update, context, st.error)
+    except Exception as e:
+        if str(e) == "similar account":
+            send_message(update, context, st.pitiful_attempt)
+        else:
+            send_message(update, context, st.error)
+            print(e)
 
     return ConversationHandler.END
 
@@ -276,5 +280,45 @@ def remove_favorite(update: Update, context: ContextTypes.DEFAULT_TYPE):
             text = st.user_was_remove
     except IndexError:
         text = st.incorrect_input
+
+    send_message(update, context, text)
+
+
+@log_errors
+def transaction_history(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    text = st.interaction_not_found
+    try:
+        account = context.args[0]
+        history = AccountService.transaction_history(update.effective_chat.id, account)
+
+        text = st.transaction_history(history, account)
+    except (IndexError, ValueError):
+        pass
+
+    send_message(update, context, text)
+
+
+@log_errors
+def interaction_list(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    text = st.interaction_not_found
+
+    interactions = AccountService.interaction_list(update.effective_chat.id)
+    if len(interactions) != 0:
+        text = st.interaction_list
+        for i, user in enumerate(interactions):
+            text += f'{i + 1}. {user}\n'
+
+    send_message(update, context, text)
+
+
+@log_errors
+def create_first_account(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    card = CardService.create_first(update.effective_chat.id)
+
+    if card is None:
+        text = st.account_is_exist
+    else:
+        text = st.account_was_created + f'Номер счета - {card.account.number}\n' \
+                                        f'Номер карты - {card.number}'
 
     send_message(update, context, text)

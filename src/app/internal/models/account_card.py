@@ -1,4 +1,24 @@
+import re
+
+from django.core.exceptions import ValidationError
 from django.db import models
+
+RE_ACCOUNT = r'[1-9][0-9]{9}'
+RE_CARD = r'[1-9][0-9]{15}'
+
+
+def validate_account(number: int) -> None:
+    rule = re.compile(RE_ACCOUNT)
+
+    if not rule.search(str(number)):
+        raise ValidationError(f"Incorrect account number - {number}")
+
+
+def validate_card(number: int) -> None:
+    rule = re.compile(RE_CARD)
+
+    if not rule.search(str(number)):
+        raise ValidationError(f"Incorrect card number - {number}")
 
 
 class Account(models.Model):
@@ -7,12 +27,13 @@ class Account(models.Model):
         primary_key=True,
         unique=True,
         null=False,
+        validators=[validate_account],
     )
 
     owner = models.ForeignKey(
         verbose_name='User profile',
         to='User',
-        on_delete=models.SET_NULL,
+        on_delete=models.CASCADE,
         null=True,
     )
 
@@ -38,6 +59,7 @@ class Card(models.Model):
         primary_key=True,
         unique=True,
         null=False,
+        validators=[validate_card],
     )
 
     account = models.ForeignKey(

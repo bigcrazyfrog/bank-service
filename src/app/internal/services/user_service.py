@@ -1,9 +1,7 @@
-import re
+
 from typing import List
 
-from app.internal.models.admin_user import User
-
-RE_NUMBER = r'(^[+0-9]{1,3})*([0-9]{10,11}$)'
+from app.internal.models.admin_user import User, validate_phone
 
 
 def log_errors(f):
@@ -19,20 +17,20 @@ def log_errors(f):
 
 class UserService:
     @staticmethod
-    def new_user(telegram_id: str) -> None:
-        User.objects.get_or_create(id=telegram_id)
+    def new_user(telegram_id: str, name: str) -> bool:
+        user, created = User.objects.get_or_create(id=telegram_id)
+        user.name = name
+        user.save()
+
+        return created
 
     @staticmethod
-    def update_phone(telegram_id: str, phone: str) -> None:
-        rule = re.compile(RE_NUMBER)
-
-        if not rule.search(phone):
-            raise ValueError
-
+    def update_phone(telegram_id: str, phone_number: str) -> None:
+        validate_phone(phone_number)
         user, _ = User.objects.get_or_create(id=telegram_id)
 
-        user.phone_number = phone
-        user.save(update_fields=["phone_number"])
+        user.phone_number = phone_number
+        user.save(update_fields=("phone_number",))
 
     @staticmethod
     def info(telegram_id: str) -> dict:
@@ -57,12 +55,7 @@ class UserService:
     @staticmethod
     def get_favorite_list(user_id: str) -> List[User]:
         user = User.objects.get(id=user_id)
-
-        favorite_list = []
-        for favorite_user in user.favorite_users.all():
-            favorite_list.append(favorite_user.id)
-
-        return favorite_list
+        return user.favorite_users.values_list("id", flat=True)
 
     @staticmethod
     def add_favorite(user_id: str, favorite_user_id: str) -> bool:
