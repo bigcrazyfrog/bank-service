@@ -1,10 +1,16 @@
 import datetime
+
 import jwt
 
 from app.internal.models.token import AccessToken, RefreshToken
 from app.internal.services.user_service import UserService
-from config.settings import JWT_ACCESS_SECRET, SALT, JWT_REFRESH_TOKEN_LIFETIME, JWT_ACCESS_TOKEN_LIFETIME, \
-    JWT_REFRESH_SECRET
+from config.settings import (
+    JWT_ACCESS_SECRET,
+    JWT_ACCESS_TOKEN_LIFETIME,
+    JWT_REFRESH_SECRET,
+    JWT_REFRESH_TOKEN_LIFETIME,
+    SALT,
+)
 
 
 class AuthService:
