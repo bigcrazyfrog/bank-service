@@ -2,7 +2,7 @@ import datetime
 
 import jwt
 
-from app.internal.models.token import AccessToken, RefreshToken
+from app.internal.models.token import RefreshToken
 from app.internal.services.user_service import UserService
 from config.settings import (
     JWT_ACCESS_SECRET,
@@ -29,10 +29,12 @@ class AuthService:
 
     @staticmethod
     def check_access_token(token: str) -> bool:
-        date = AccessToken.objects.filter(jti=token).values_list('created_at', flat=True).first()
-        if not date:
+        try:
+            payload = jwt.decode(token, JWT_ACCESS_SECRET, algorithms=["HS256"])
+        except jwt.exceptions.ExpiredSignatureError:
             return False
 
+        date = datetime.datetime.strptime(payload["date"], '%Y-%m-%d %H:%M:%S.%f')
         return date + JWT_ACCESS_TOKEN_LIFETIME > datetime.datetime.now()
 
     @staticmethod
@@ -59,8 +61,6 @@ class AuthService:
         refresh_token = AuthService.generate_refresh_token(user_id)
 
         user = UserService.get_user(user_id)
-
-        AccessToken.objects.create(jti=access_token, user=user)
         RefreshToken.objects.create(jti=refresh_token, user=user)
 
         return {

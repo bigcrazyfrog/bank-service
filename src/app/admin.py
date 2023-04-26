@@ -2,7 +2,7 @@ from django.contrib import admin
 
 from app.internal.admin.account_card import AccountAdmin, CardAdmin
 from app.internal.admin.admin_user import AdminUserAdmin, UserAdmin
-from app.internal.admin.token import AccessTokenAdmin, RefreshTokenAdmin
+from app.internal.admin.token import RefreshTokenAdmin
 from app.internal.admin.transaction import TransactionAdmin
 
 admin.site.site_title = "Backend course"

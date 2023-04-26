@@ -1,11 +1,6 @@
 from django.contrib import admin
 
-from app.internal.models.token import AccessToken, RefreshToken
-
-
-@admin.register(AccessToken)
-class AccessTokenAdmin(admin.ModelAdmin):
-    pass
+from app.internal.models.token import RefreshToken
 
 
 @admin.register(RefreshToken)
