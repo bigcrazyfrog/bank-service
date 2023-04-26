@@ -24,8 +24,13 @@ class AuthService:
         if refresh_token.revoked:
             return True
 
-        date = RefreshToken.objects.filter(jti=token).values_list('created_at', flat=True).first()
-        return date + JWT_REFRESH_TOKEN_LIFETIME < datetime.datetime.now()
+        try:
+            payload = jwt.decode(token, JWT_ACCESS_SECRET, algorithms=["HS256"])
+        except jwt.exceptions.ExpiredSignatureError:
+            return None
+
+        date = datetime.datetime.strptime(payload["date"], '%Y-%m-%d %H:%M:%S.%f')
+        return date < datetime.datetime.now()
 
     @staticmethod
     def check_access_token(token: str) -> bool:
@@ -35,7 +40,7 @@ class AuthService:
             return False
 
         date = datetime.datetime.strptime(payload["date"], '%Y-%m-%d %H:%M:%S.%f')
-        return date + JWT_ACCESS_TOKEN_LIFETIME > datetime.datetime.now()
+        return date > datetime.datetime.now()
 
     @staticmethod
     def get_user_id(token: str) -> str | None:
@@ -70,10 +75,10 @@ class AuthService:
 
     @staticmethod
     def generate_access_token(user_id):
-        date = str(datetime.datetime.now())
+        date = str(datetime.datetime.now() + JWT_ACCESS_TOKEN_LIFETIME)
         return jwt.encode({"id": user_id, "admin": False, "date": date}, JWT_ACCESS_SECRET, algorithm="HS256")
 
     @staticmethod
     def generate_refresh_token(user_id: str):
-        date = str(datetime.datetime.now())
+        date = str(datetime.datetime.now() + JWT_REFRESH_TOKEN_LIFETIME)
         return jwt.encode({"id": user_id, "date": date}, JWT_REFRESH_SECRET, algorithm="HS256")
