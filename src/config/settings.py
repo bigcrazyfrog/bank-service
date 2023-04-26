@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 import os
 from pathlib import Path
 
+import datetime
 import environ
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -34,6 +35,12 @@ DEBUG = env('DEBUG')
 ALLOWED_HOSTS = env('ALLOWED_HOSTS').split()
 BOT_TOKEN = env('BOT_TOKEN')
 SECRET_KEY = env('SECRET_KEY')
+
+JWT_ACCESS_SECRET = env('JWT_ACCESS_SECRET')
+JWT_REFRESH_SECRET = env('JWT_REFRESH_SECRET')
+JWT_ACCESS_TOKEN_LIFETIME = datetime.timedelta(seconds=int(env('JWT_ACCESS_TOKEN_LIFETIME')))
+JWT_REFRESH_TOKEN_LIFETIME = datetime.timedelta(seconds=int(env('JWT_REFRESH_TOKEN_LIFETIME')))
+SALT = env('SALT')
 
 # Application definition
 

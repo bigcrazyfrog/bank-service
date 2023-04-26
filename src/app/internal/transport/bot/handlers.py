@@ -322,3 +322,14 @@ def create_first_account(update: Update, context: ContextTypes.DEFAULT_TYPE):
                                         f'Номер карты - {card.number}'
 
     send_message(update, context, text)
+
+
+@log_errors
+def set_password(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    try:
+        UserService.set_password(update.effective_chat.id, context.args[0])
+        text = st.password_was_recorded
+    except (IndexError, ValueError):
+        text = st.incorrect_input
+
+    send_message(update, context, text)

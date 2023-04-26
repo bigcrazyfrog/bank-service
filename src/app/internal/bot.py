@@ -18,6 +18,7 @@ commands = [
     ('history', sync_to_async(transaction_history)),
     ('interaction', sync_to_async(interaction_list)),
     ('create_account', sync_to_async(create_first_account)),
+    ('set_password', sync_to_async(set_password)),
 ]
 
 

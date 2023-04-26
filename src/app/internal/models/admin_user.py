@@ -33,6 +33,12 @@ class User(models.Model):
         default=None,
     )
 
+    password = models.CharField(
+        max_length=255,
+        null=True,
+        default=None,
+    )
+
     phone_number = models.CharField(
         verbose_name='phone number',
         max_length=12,

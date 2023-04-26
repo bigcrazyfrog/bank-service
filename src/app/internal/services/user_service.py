@@ -1,7 +1,8 @@
-
+import hashlib
 from typing import List
 
 from app.internal.models.admin_user import User, validate_phone
+from config.settings import SALT
 
 
 def log_errors(f):
@@ -20,9 +21,17 @@ class UserService:
     def new_user(telegram_id: str, name: str) -> bool:
         user, created = User.objects.get_or_create(id=telegram_id)
         user.name = name
-        user.save()
+        user.save(update_fields=("name",))
 
         return created
+
+    @staticmethod
+    def get_user(telegram_id: str) -> User | None:
+        user = User.objects.filter(id=telegram_id)
+        if not user.exists():
+            return None
+
+        return user.first()
 
     @staticmethod
     def update_phone(telegram_id: str, phone_number: str) -> None:
@@ -51,6 +60,25 @@ class UserService:
             pass
 
         return user_info
+
+    @staticmethod
+    def set_password(user_id: str, password: str) -> None:
+        if len(password) > 255 or len(password) < 4:
+            raise ValueError
+
+        user, _ = User.objects.get_or_create(id=user_id)
+
+        user.password = UserService.hash_password(password)
+        user.save(update_fields=("password",))
+
+    @staticmethod
+    def is_correct_password(user_id: str, password: str) -> bool:
+        origin_password = User.objects.filter(id=user_id).values_list('password', flat=True).first()
+        return UserService.hash_password(password) == origin_password
+
+    @staticmethod
+    def hash_password(password: str) -> str:
+        return hashlib.sha512(password.encode() + SALT.encode()).hexdigest()
 
     @staticmethod
     def get_favorite_list(user_id: str) -> List[User]:
