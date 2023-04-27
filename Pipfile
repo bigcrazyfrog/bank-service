@@ -14,6 +14,8 @@ flake8 = "~=4.0"
 pytest = "*"
 python-telegram-bot = {extras = ["webhooks"], version = "*"}
 psycopg2-binary = "*"
+django-ninja = "*"
+pyjwt = "*"
 
 [requires]
 python_version = "3.10"
