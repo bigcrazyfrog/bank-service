@@ -1,8 +1,14 @@
-from django.http import JsonResponse, HttpRequest
-from ninja.params import Path, Body
+from django.http import HttpRequest, JsonResponse
+from ninja.params import Body, Path
 
-from app.internal.users.domain.entities import UserOut, UserIn, SuccessResponse, Tokens, FavouriteListSchema, \
-    NotFoundException
+from app.internal.users.domain.entities import (
+    FavouriteListSchema,
+    NotFoundException,
+    SuccessResponse,
+    Tokens,
+    UserIn,
+    UserOut,
+)
 from app.internal.users.domain.services import UserService
 
 

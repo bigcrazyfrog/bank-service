@@ -1,9 +1,8 @@
-from ninja import Router, NinjaAPI
 from django.http import JsonResponse
+from ninja import NinjaAPI, Router
 
-from app.internal.users.domain.entities import SuccessResponse, ErrorResponse, UserOut, Tokens, \
-    FavouriteListSchema
-from app.internal.users.presentation.handlers import UserHandlers, IncorrectPasswordError
+from app.internal.users.domain.entities import ErrorResponse, FavouriteListSchema, SuccessResponse, Tokens, UserOut
+from app.internal.users.presentation.handlers import IncorrectPasswordError, UserHandlers
 
 
 def get_users_router(user_handlers: UserHandlers):

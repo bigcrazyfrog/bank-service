@@ -1,7 +1,7 @@
-from typing import Optional, List
+from typing import List, Optional
 
-from app.internal.users.db.models import User, validate_phone, RefreshToken
-from app.internal.users.domain.entities import UserOut, UserIn, NotFoundException
+from app.internal.users.db.models import RefreshToken, User, validate_phone
+from app.internal.users.domain.entities import NotFoundException, UserIn, UserOut
 from app.internal.users.domain.services import IUserRepository
 
 

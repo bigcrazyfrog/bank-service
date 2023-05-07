@@ -1,7 +1,7 @@
 from typing import List
 
 from app.internal.bank.db.models import Account
-from app.internal.bank.domain.entities import AccountListSchema, ErrorResponse, CardListSchema
+from app.internal.bank.domain.entities import AccountListSchema, CardListSchema, ErrorResponse
 
 
 class IAccountRepository:

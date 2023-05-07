@@ -1,5 +1,5 @@
 from itertools import chain
-from typing import Optional, List
+from typing import List, Optional
 
 from django.db import transaction
 from django.db.models import F, Q

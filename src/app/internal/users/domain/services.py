@@ -1,13 +1,18 @@
-import hashlib
 import datetime
+import hashlib
 from typing import List
 
 import jwt
 
 from app.internal.users.db.models import RefreshToken, User
-from app.internal.users.domain.entities import UserOut, UserIn
-from config.settings import SALT, JWT_ACCESS_SECRET, JWT_ACCESS_TOKEN_LIFETIME, JWT_REFRESH_TOKEN_LIFETIME, \
-    JWT_REFRESH_SECRET
+from app.internal.users.domain.entities import UserIn, UserOut
+from config.settings import (
+    JWT_ACCESS_SECRET,
+    JWT_ACCESS_TOKEN_LIFETIME,
+    JWT_REFRESH_SECRET,
+    JWT_REFRESH_TOKEN_LIFETIME,
+    SALT,
+)
 
 
 class IUserRepository:
@@ -15,6 +20,33 @@ class IUserRepository:
         ...
 
     def add_user(self, user_data: UserIn) -> UserOut:
+        ...
+
+    def update_fields(self, id: str, fields: dict) -> None:
+        ...
+
+    def get_favorite_list(self, id: str) -> List[str] | None:
+        ...
+
+    def add_favorite(self, id: str, favorite_user_id: str) -> None:
+        ...
+
+    def remove_favorite(self, id: str, favorite_user_id: str) -> None:
+        ...
+
+    def is_correct_password(self, user_id: str, password: str) -> bool:
+        ...
+
+    def token_exists(self, token: str) -> bool:
+        ...
+
+    def get_token(self, token: str) -> RefreshToken:
+        ...
+
+    def revoke_token(self, token: str) -> None:
+        ...
+
+    def revoke_all_tokens(self, user_id: str) -> None:
         ...
 
 

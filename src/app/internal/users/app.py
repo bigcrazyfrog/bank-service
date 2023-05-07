@@ -6,10 +6,14 @@ from app.internal.bank.db.repositories import AccountRepository
 from app.internal.bank.domain.services import AccountService
 from app.internal.bank.presentation.handlers import AccountHandlers
 from app.internal.bank.presentation.routers import add_accounts_router
-from app.internal.users.db.repositories import UserRepository, NotFoundException
+from app.internal.users.db.repositories import NotFoundException, UserRepository
 from app.internal.users.domain.services import UserService
-from app.internal.users.presentation.handlers import UserHandlers, IncorrectPasswordError, TokenNotExistError, \
-    RevokedTokenError
+from app.internal.users.presentation.handlers import (
+    IncorrectPasswordError,
+    RevokedTokenError,
+    TokenNotExistError,
+    UserHandlers,
+)
 from app.internal.users.presentation.routers import add_users_router
 
 
@@ -68,6 +72,6 @@ def user_not_found_exception_handler(request, exc):
 def incorrect_password_exception_handler(request, exc):
     return ninja_api.create_response(
         request,
-        {"message": f"Incorrect password or username"},
+        {"message": "Incorrect password or username"},
         status=400,
     )

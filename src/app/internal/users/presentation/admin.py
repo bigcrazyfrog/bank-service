@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from app.internal.users.db.models import User, RefreshToken
+from app.internal.users.db.models import RefreshToken, User
 
 
 @admin.register(User)

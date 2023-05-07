@@ -1,9 +1,9 @@
 from typing import List
 
-from django.http import JsonResponse, HttpRequest
-from ninja.params import Path, Body
+from django.http import HttpRequest, JsonResponse
+from ninja.params import Body, Path
 
-from app.internal.bank.domain.entities import BalanceSchema, SuccessResponse, AccountListSchema
+from app.internal.bank.domain.entities import AccountListSchema, BalanceSchema, SuccessResponse
 from app.internal.bank.domain.services import AccountService
 
 

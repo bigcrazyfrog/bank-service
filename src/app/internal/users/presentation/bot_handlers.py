@@ -4,9 +4,9 @@ from django.core.exceptions import ValidationError
 from telegram import ReplyKeyboardMarkup, ReplyKeyboardRemove, Update
 from telegram.ext import ContextTypes, ConversationHandler
 
+from app.internal.users.domain.entities import UserIn
 from app.internal.users.domain.services import UserService
 from app.internal.users.presentation import static_text as st
-from app.internal.users.domain.entities import UserIn
 
 
 def log_errors(f):

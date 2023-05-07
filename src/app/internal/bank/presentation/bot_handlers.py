@@ -4,9 +4,9 @@ from telegram import ReplyKeyboardMarkup, ReplyKeyboardRemove, Update
 from telegram.ext import ContextTypes, ConversationHandler
 
 from app.internal.bank.domain.services import AccountService
+from app.internal.users.domain.entities import NotFoundException, UserIn
 from app.internal.users.domain.services import UserService
 from app.internal.users.presentation import static_text as st
-from app.internal.users.domain.entities import UserIn, NotFoundException
 
 
 def log_errors(f):
@@ -169,7 +169,7 @@ class BotAccountHandlers:
         try:
             if not self._account_service.exists(int(account)):
                 raise ValueError
-        except Exception as e:
+        except Exception:
             send_message(update, context, st.incorrect_account)
             return 5
 

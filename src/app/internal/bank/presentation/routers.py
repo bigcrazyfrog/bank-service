@@ -1,5 +1,5 @@
-from ninja import Router, NinjaAPI
 from django.http import JsonResponse
+from ninja import NinjaAPI, Router
 
 from app.internal.bank.domain.entities import AccountListSchema, BalanceSchema, ErrorResponse, SuccessResponse
 from app.internal.bank.presentation.handlers import AccountHandlers
