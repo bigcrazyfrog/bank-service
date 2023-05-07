@@ -1,3 +1,5 @@
+from app.internal.users.domain.entities import UserOut
+
 welcome = "✅ <b>Добро пожаловать</b>! ✅\n\n" \
           "Список доступных команд - /help"
 help = "🗓️ <b>Основные команды</b>\n\n" \
@@ -72,14 +74,14 @@ interaction_list = "👥 <b>Недавние пользователи</b> \n\n"
 interaction_not_found = "Еще не было взаимодействий"
 
 
-def me(user: dict) -> str:
-    number = user['phone_number']
+def me(user: UserOut) -> str:
+    number = user.phone_number
 
     if number is None:
         return not_exist
 
     text = info + line
-    text += f'🆔 Telegram ID : {user["id"]}\n ' \
+    text += f'🆔 Telegram ID : {user.id}\n ' \
             f'📞 Ваш номер : {number}' + line
 
     return text
