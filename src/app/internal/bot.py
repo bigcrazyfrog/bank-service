@@ -9,7 +9,7 @@ from app.internal.users.presentation.bot_handlers import *
 from config.settings import BOT_PORT, BOT_TOKEN, BOT_WEBHOOK_HOST
 
 
-def update_handlers(application):
+def update_user_handlers(application):
     user_repo = UserRepository()
     user_service = UserService(user_repo=user_repo)
     bot_user_handler = BotUserHandlers(user_service=user_service)
@@ -23,6 +23,8 @@ def update_handlers(application):
     application.add_handler(CommandHandler("remove_favorite", sync_to_async(bot_user_handler.remove_favorite)))
     application.add_handler(CommandHandler("set_password", sync_to_async(bot_user_handler.set_password)))
 
+
+def update_account_handlers(application):
     account_repo = AccountRepository()
     account_service = AccountService(account_repo=account_repo)
     bot_account_handler = BotAccountHandlers(account_service=account_service)
@@ -52,7 +54,8 @@ def update_handlers(application):
 def bot_polling():
     application = ApplicationBuilder().token(BOT_TOKEN).build()
 
-    update_handlers(application)
+    update_user_handlers(application=application)
+    update_account_handlers(application=application)
 
     application.run_polling()
 
@@ -60,7 +63,8 @@ def bot_polling():
 def bot_webhook():
     application = ApplicationBuilder().token(BOT_TOKEN).build()
 
-    update_handlers(application)
+    update_user_handlers(application=application)
+    update_account_handlers(application=application)
 
     application.run_webhook(
         listen='0.0.0.0',
