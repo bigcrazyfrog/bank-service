@@ -4,9 +4,8 @@ from telegram import ReplyKeyboardMarkup, ReplyKeyboardRemove, Update
 from telegram.ext import ContextTypes, ConversationHandler
 
 from app.internal.bank.domain.services import AccountService
-from app.internal.users.domain.entities import NotFoundException, UserIn
-from app.internal.users.domain.services import UserService
-from app.internal.users.presentation import static_text as st
+from app.internal.bank.domain.entities import NotFoundException
+from app.internal.bank.presentation import static_text as st
 
 
 def log_errors(f):
