@@ -1,4 +1,2 @@
-from app.internal.models.account_card import Account, Card
-from app.internal.models.admin_user import AdminUser, User
-from app.internal.models.token import RefreshToken
-from app.internal.models.transaction import Transaction
+from app.internal.bank.db.models import Account, Transaction
+from app.internal.users.db.models import AdminUser, RefreshToken, User

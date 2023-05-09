@@ -8,16 +8,6 @@ from app.internal.users.db.repositories import UserRepository
 from app.internal.users.presentation.bot_handlers import *
 from config.settings import BOT_PORT, BOT_TOKEN, BOT_WEBHOOK_HOST
 
-commands = [
-    # ('start', sync_to_async(start)),
-    # ('balance', sync_to_async(balance)),
-    # ('account_list', sync_to_async(account_list)),
-    # ('card_list', sync_to_async(card_list)),
-    # ('history', sync_to_async(transaction_history)),
-    # ('interaction', sync_to_async(interaction_list)),
-    # ('create_account', sync_to_async(create_first_account)),
-]
-
 
 def update_handlers(application):
     user_repo = UserRepository()
@@ -42,9 +32,6 @@ def update_handlers(application):
     application.add_handler(CommandHandler("card_list", sync_to_async(bot_account_handler.get_card_list)))
     application.add_handler(CommandHandler("interaction_list", sync_to_async(bot_account_handler.interaction_list)))
     application.add_handler(CommandHandler("history", sync_to_async(bot_account_handler.transaction_history)))
-
-    for command in commands:
-        application.add_handler(CommandHandler(*command))
 
     conv_handler = ConversationHandler(
         entry_points=[CommandHandler("send_money", sync_to_async(bot_account_handler.send_money))],
