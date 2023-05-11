@@ -73,7 +73,9 @@ class BotUserHandlers:
         favorite_users = self._user_service.get_favorite_list(update.effective_chat.id)
 
         if favorite_users:
-            text = st.favorite_list + '\n'.join(favorite_users)
+            text = st.favorite_list
+            for user in favorite_users:
+                text += '\n' + user.name
         else:
             text = st.favorite_no_list
 

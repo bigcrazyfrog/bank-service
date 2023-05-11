@@ -25,11 +25,11 @@ class UserOut(UserSchema):
 
 
 class UserIn(UserSchema):
-    ...
+    password: str
 
 
-class FavouriteListSchema(Schema):
-    favorite_user: list
+class IncorrectPasswordError(Exception):
+    pass
 
 
 class NotFoundException(Exception):

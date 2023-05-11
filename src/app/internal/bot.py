@@ -1,9 +1,9 @@
 from asgiref.sync import sync_to_async
 from telegram.ext import ApplicationBuilder, CommandHandler, ConversationHandler, MessageHandler, filters
 
-from app.internal.bank.db.repositories import AccountRepository
-from app.internal.bank.domain.services import AccountService
-from app.internal.bank.presentation.bot_handlers import BotAccountHandlers
+from app.internal.bank.db.repositories import BankRepository
+from app.internal.bank.domain.services import BankService
+from app.internal.bank.presentation.bot_handlers import BotBankHandlers
 from app.internal.users.db.repositories import UserRepository
 from app.internal.users.presentation.bot_handlers import *
 from config.settings import BOT_PORT, BOT_TOKEN, BOT_WEBHOOK_HOST
@@ -25,12 +25,12 @@ def update_user_handlers(application):
 
 
 def update_account_handlers(application):
-    account_repo = AccountRepository()
-    account_service = AccountService(account_repo=account_repo)
-    bot_account_handler = BotAccountHandlers(account_service=account_service)
+    account_repo = BankRepository()
+    account_service = BankService(bank_repo=account_repo)
+    bot_account_handler = BotBankHandlers(account_service=account_service)
 
     application.add_handler(CommandHandler("balance", sync_to_async(bot_account_handler.get_balance)))
-    application.add_handler(CommandHandler("account_list", sync_to_async(bot_account_handler.get_list)))
+    application.add_handler(CommandHandler("account_list", sync_to_async(bot_account_handler.get_account_list)))
     application.add_handler(CommandHandler("card_list", sync_to_async(bot_account_handler.get_card_list)))
     application.add_handler(CommandHandler("interaction_list", sync_to_async(bot_account_handler.interaction_list)))
     application.add_handler(CommandHandler("history", sync_to_async(bot_account_handler.transaction_history)))

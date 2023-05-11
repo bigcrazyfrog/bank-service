@@ -40,8 +40,8 @@ BOT_WEBHOOK_HOST = env('BOT_WEBHOOK_HOST')
 
 JWT_ACCESS_SECRET = env('JWT_ACCESS_SECRET')
 JWT_REFRESH_SECRET = env('JWT_REFRESH_SECRET')
-JWT_ACCESS_TOKEN_LIFETIME = datetime.timedelta(seconds=int(env('JWT_ACCESS_TOKEN_LIFETIME')))
-JWT_REFRESH_TOKEN_LIFETIME = datetime.timedelta(seconds=int(env('JWT_REFRESH_TOKEN_LIFETIME')))
+JWT_ACCESS_TOKEN_LIFETIME = datetime.timedelta(minutes=int(env('JWT_ACCESS_TOKEN_LIFETIME')))
+JWT_REFRESH_TOKEN_LIFETIME = datetime.timedelta(days=int(env('JWT_REFRESH_TOKEN_LIFETIME')))
 SALT = env('SALT')
 
 # Application definition

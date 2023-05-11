@@ -52,6 +52,7 @@ class User(models.Model):
         to='self',
         verbose_name='favorite users list',
         symmetrical=False,
+        blank=True,
     )
 
     def __str__(self):
@@ -60,10 +61,3 @@ class User(models.Model):
     class Meta:
         verbose_name = 'Profile'
         verbose_name_plural = 'Profiles'
-
-
-class RefreshToken(models.Model):
-    jti = models.CharField(max_length=255, primary_key=True)
-    user = models.ForeignKey(to='User', related_name='refresh_token', on_delete=models.CASCADE)
-    created_at = models.DateTimeField(auto_now_add=True)
-    revoked = models.BooleanField(default=False)

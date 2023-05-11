@@ -6,16 +6,15 @@ from django.db.models import F, Q
 
 from app.internal.bank.db.models import Account, Card, Transaction
 from app.internal.bank.domain.entities import AccountListSchema, CardListSchema, ErrorResponse
-from app.internal.bank.domain.services import IAccountRepository
+from app.internal.bank.domain.services import IBankRepository
 from app.internal.users.domain.entities import NotFoundException
 
 BATCH_SIZE: int = 10
 
 
-class AccountRepository(IAccountRepository):
-    def get_list(self, user_id: str) -> AccountListSchema:
+class BankRepository(IBankRepository):
+    def get_account_list(self, user_id: str) -> AccountListSchema:
         accounts = Account.objects.filter(owner__id=user_id).values_list('number', flat=True)
-
         return AccountListSchema(accounts=list(accounts))
 
     def get_card_list(self, user_id: str) -> CardListSchema:
@@ -38,7 +37,7 @@ class AccountRepository(IAccountRepository):
 
     def send_money(self, user_id: str, from_account: int, to_account: int, amount: float) -> bool:
         if from_account == to_account:
-            raise ErrorResponse(error="similar account")
+            raise Exception("similar account")
 
         with transaction.atomic():
             account1 = Account.objects.filter(owner__id=user_id, number=from_account).first()

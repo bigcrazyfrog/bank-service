@@ -3,7 +3,7 @@ from asgiref.sync import async_to_sync, sync_to_async
 from telegram import ReplyKeyboardMarkup, ReplyKeyboardRemove, Update
 from telegram.ext import ContextTypes, ConversationHandler
 
-from app.internal.bank.domain.services import AccountService
+from app.internal.bank.domain.services import BankService
 from app.internal.bank.domain.entities import NotFoundException
 from app.internal.bank.presentation import static_text as st
 
@@ -31,8 +31,8 @@ def send_message(update: Update, context: ContextTypes.DEFAULT_TYPE, text: str, 
     )
 
 
-class BotAccountHandlers:
-    def __init__(self, account_service: AccountService):
+class BotBankHandlers:
+    def __init__(self, account_service: BankService):
         self._account_service = account_service
 
     @log_errors
@@ -49,8 +49,8 @@ class BotAccountHandlers:
         send_message(update, context, text)
 
     @log_errors
-    def get_list(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
-        accounts = self._account_service.get_list(update.effective_chat.id)
+    def get_account_list(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+        accounts = self._account_service.get_account_list(update.effective_chat.id)
         account_numbers = accounts.accounts
 
         text = st.balance_not_exist
@@ -72,7 +72,7 @@ class BotAccountHandlers:
 
     @log_errors
     def send_money(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
-        accounts = self._account_service.get_list(update.effective_chat.id)
+        accounts = self._account_service.get_account_list(update.effective_chat.id)
 
         reply_keyboard = []
         for account in accounts.accounts:
