@@ -1,9 +1,9 @@
 from django.http import JsonResponse
 from ninja import NinjaAPI, Router
 
-from app.internal.bank.domain.entities import AccountListSchema, BalanceSchema, ErrorResponse, SuccessResponse, \
-    CardListSchema
+from app.internal.bank.domain.entities import AccountListSchema, BalanceSchema, CardListSchema
 from app.internal.bank.presentation.handlers import BankHandlers
+from app.internal.users.domain.entities import ErrorResponse, SuccessResponse
 
 
 def get_banks_router(account_handlers: BankHandlers):

@@ -1,9 +1,9 @@
 from typing import Optional
 
+from app.internal.auth.db.exceptions import AlreadyExistException
 from app.internal.auth.db.models import RefreshToken
 from app.internal.users.db.models import User
-from app.internal.auth.domain.entities import AlreadyExistException
-from app.internal.users.domain.entities import NotFoundException, UserIn, UserOut
+from app.internal.users.domain.entities import UserIn, UserOut
 from app.internal.auth.domain.services import IAuthRepository
 
 

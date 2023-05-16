@@ -1,6 +1,6 @@
 from typing import List
 
-from app.internal.users.domain.entities import UserIn, UserOut
+from app.internal.users.domain.entities import UserIn, UserOut, UserSchema
 
 
 class IUserRepository:
@@ -26,6 +26,9 @@ class IUserRepository:
 class UserService:
     def __init__(self, user_repo: IUserRepository):
         self._user_repo = user_repo
+
+    def add_user(self, user: UserSchema):
+        return self._user_repo.add_user(user=user)
 
     def get_user_by_id(self, id: str) -> UserOut:
         return self._user_repo.get_user_by_id(id=id)

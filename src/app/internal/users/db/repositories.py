@@ -1,7 +1,8 @@
 from typing import List, Optional
 
+from app.internal.users.db.exceptions import NotFoundException
 from app.internal.users.db.models import User, validate_phone
-from app.internal.users.domain.entities import NotFoundException, UserIn, UserOut
+from app.internal.users.domain.entities import UserIn, UserOut, UserSchema
 from app.internal.users.domain.services import IUserRepository
 
 
@@ -12,6 +13,10 @@ class UserRepository(IUserRepository):
             raise NotFoundException(name="User", id=id)
 
         return user
+
+    def add_user(self, user: UserSchema) -> bool:
+        user, created = User.objects.get_or_create(id=user.id)
+        return created
 
     def get_user_by_id(self, id: str) -> UserOut:
         user = self.get_model_user(id=id)

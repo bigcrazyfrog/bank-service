@@ -4,7 +4,7 @@ from django.http import JsonResponse
 from ninja import NinjaAPI, Router
 
 from app.internal.users.domain.entities import ErrorResponse, SuccessResponse, Tokens, UserOut
-from app.internal.users.presentation.handlers import IncorrectPasswordError, UserHandlers
+from app.internal.users.presentation.handlers import UserHandlers
 
 
 def get_users_router(user_handlers: UserHandlers):

@@ -3,9 +3,9 @@ from telegram.ext import ApplicationBuilder, CommandHandler, ConversationHandler
 
 from app.internal.bank.db.repositories import BankRepository
 from app.internal.bank.domain.services import BankService
-from app.internal.bank.presentation.bot_handlers import BotBankHandlers
+from app.internal.bank.presentation.handlers import BotBankHandlers
 from app.internal.users.db.repositories import UserRepository
-from app.internal.users.presentation.bot_handlers import *
+from app.internal.users.presentation.handlers import *
 from config.settings import BOT_PORT, BOT_TOKEN, BOT_WEBHOOK_HOST
 
 

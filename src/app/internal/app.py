@@ -2,8 +2,8 @@ from django.http import HttpRequest, JsonResponse
 from ninja import NinjaAPI
 from ninja.security import HttpBearer
 
+from app.internal.auth.db.exceptions import AlreadyExistException
 from app.internal.auth.db.repositories import AuthRepository
-from app.internal.auth.domain.entities import AlreadyExistException
 from app.internal.auth.domain.services import AuthService
 from app.internal.auth.presentation.handlers import AuthHandlers
 from app.internal.auth.presentation.routers import add_auth_router
@@ -11,9 +11,9 @@ from app.internal.bank.db.repositories import BankRepository
 from app.internal.bank.domain.services import BankService
 from app.internal.bank.presentation.handlers import BankHandlers
 from app.internal.bank.presentation.routers import add_banks_router
+from app.internal.users.db.exceptions import IncorrectPasswordError
 
 from app.internal.users.db.repositories import NotFoundException, UserRepository
-from app.internal.users.domain.entities import IncorrectPasswordError
 from app.internal.users.domain.services import UserService
 from app.internal.users.presentation.handlers import UserHandlers
 from app.internal.users.presentation.routers import add_users_router

@@ -5,9 +5,10 @@ from django.db import transaction
 from django.db.models import F, Q
 
 from app.internal.bank.db.models import Account, Card, Transaction
-from app.internal.bank.domain.entities import AccountListSchema, CardListSchema, ErrorResponse
+from app.internal.bank.domain.entities import AccountListSchema, CardListSchema
 from app.internal.bank.domain.services import IBankRepository
-from app.internal.users.domain.entities import NotFoundException
+from app.internal.users.db.exceptions import NotFoundException
+from app.internal.users.domain.entities import ErrorResponse
 
 BATCH_SIZE: int = 10
 
