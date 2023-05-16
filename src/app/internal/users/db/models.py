@@ -52,6 +52,7 @@ class User(models.Model):
         to='self',
         verbose_name='favorite users list',
         symmetrical=False,
+        blank=True,
     )
 
     def __str__(self):

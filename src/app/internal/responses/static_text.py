@@ -1,3 +1,5 @@
+from app.internal.users.domain.entities import UserOut
+
 welcome = "✅ <b>Добро пожаловать</b>! ✅\n\n" \
           "Список доступных команд - /help"
 help = "🗓️ <b>Основные команды</b>\n\n" \
@@ -23,6 +25,27 @@ info = "👤 <b>Личный кабинет</b>"
 line = "\n--------------------\n"
 
 password_was_recorded = "✅ Пароль успешно записан"
+
+# favorite users list
+user_not_found = "Пользователь не найден"
+user_was_remove = "Пользователь удален из избранного"
+user_was_add = "Пользователь добавлен в избранное"
+favorite_list = "⭐ <b>Избранный список</b>\n\n"
+favorite_no_list = "Еще нет пользователей в избранном"
+
+
+def me(user: UserOut) -> str:
+    number = user.phone_number
+
+    if number is None:
+        return not_exist
+
+    text = info + line
+    text += f'🆔 Telegram ID : {user.id}\n ' \
+            f'📞 Ваш номер : {number}' + line
+
+    return text
+
 
 # account
 account_was_created = "✅ Счет успешно создан\n\n"
@@ -59,30 +82,10 @@ incorrect_account = "Неверный номер, либо счета не су�
 error = "Что-то пошло не так... перевод не выполнен, обратитесь в поддержку"
 cancelled = "❌️ Операция отменена"
 
-# favorite users list
-user_not_found = "Пользователь не найден"
-user_was_remove = "Пользователь удален из избранного"
-user_was_add = "Пользователь добавлен в избранное"
-favorite_list = "⭐ <b>Избранный список</b>\n\n"
-favorite_no_list = "Еще нет пользователей в избранном"
-
 # history
 account_history = "📝 <b>История операций</b> 📝\n\n"
 interaction_list = "👥 <b>Недавние пользователи</b> \n\n"
 interaction_not_found = "Еще не было взаимодействий"
-
-
-def me(user: dict) -> str:
-    number = user['phone_number']
-
-    if number is None:
-        return not_exist
-
-    text = info + line
-    text += f'🆔 Telegram ID : {user["id"]}\n ' \
-            f'📞 Ваш номер : {number}' + line
-
-    return text
 
 
 def transaction_history(history, account) -> str:
