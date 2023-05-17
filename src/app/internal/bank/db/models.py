@@ -103,7 +103,16 @@ class Transaction(models.Model):
 
     date = models.DateTimeField(
         verbose_name='Date',
-        auto_now_add=True
+        auto_now_add=True,
+    )
+
+    postcard = models.CharField(
+        max_length=255,
+        default="",
+    )
+
+    viewed = models.BooleanField(
+        default=False,
     )
 
     def __str__(self):

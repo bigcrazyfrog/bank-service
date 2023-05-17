@@ -82,6 +82,8 @@ incorrect_account = "Неверный номер, либо счета не су�
 error = "Что-то пошло не так... перевод не выполнен, обратитесь в поддержку"
 cancelled = "❌️ Операция отменена"
 
+send_postcard = "Выберите открытку"
+
 # history
 account_history = "📝 <b>История операций</b> 📝\n\n"
 interaction_list = "👥 <b>Недавние пользователи</b> \n\n"
@@ -111,6 +113,8 @@ def transaction_history(history, account) -> str:
             text += f"💳 <b>Исходящий перевод</b> {amount}₽\n" \
                     f"      Кому - {transaction.to_account.owner.name}, "
 
-        text += f'Время - {transaction.date.strftime("%H:%M")}\n\n'
+        if transaction.postcard is not None:
+            text += f"  <a href='{transaction.postcard}'>Открытка</a>\n"
+        text += f'      Время - {transaction.date.strftime("%H:%M")}\n\n'
 
     return text

@@ -1,5 +1,3 @@
-from typing import List
-
 from app.internal.bank.db.models import Account
 from app.internal.bank.domain.entities import AccountListSchema, CardListSchema
 
@@ -17,10 +15,13 @@ class IBankRepository:
     def get_balance(self, user_id: str, number: int) -> float:
         ...
 
-    def send_money(self, user_id: str, from_account: int, to_account: int, amount: float) -> bool:
+    def send_money(self, user_id: str, from_account: int, to_account: int, amount: float, path: str) -> bool:
         ...
 
     def get_account_by_id(self, user_id: str) -> Account:
+        ...
+
+    def get_unseen_transaction(self, user_id: str, number: int, page: int):
         ...
 
     def transaction_history(self, user_id: str, number: int, page: int):
@@ -46,15 +47,18 @@ class BankService:
     def get_balance(self, user_id: str, number: int) -> float:
         return self._bank_repo.get_balance(user_id=user_id, number=number)
 
-    def send_money(self, user_id: str, from_account: int, to_account: int, amount: float) -> bool:
-        return self._bank_repo.send_money(user_id, from_account, to_account, amount)
+    def send_money(self, user_id: str, from_account: int, to_account: int, amount: float, path: str) -> bool:
+        return self._bank_repo.send_money(user_id, from_account, to_account, amount, path)
 
-    def send_money_by_id(self, user_id: str, from_account: int, by_id: str, amount: float) -> bool:
+    def send_money_by_id(self, user_id: str, from_account: int, by_id: str, amount: float, path: str) -> bool:
         to_account = self._bank_repo.get_account_by_id(user_id=by_id)
-        return self._bank_repo.send_money(user_id, from_account, to_account.number, amount)
+        return self._bank_repo.send_money(user_id, from_account, to_account.number, amount, path)
 
     def transaction_history(self, user_id: str, number: int, page=0):
         return self._bank_repo.transaction_history(user_id, number, page)
+
+    def get_unseen_transaction(self, user_id: str, number: int, page=0):
+        return self._bank_repo.get_unseen_transaction(user_id, number, page)
 
     def interaction_list(self, user_id: str):
         return self._bank_repo.interaction_list(user_id=user_id)

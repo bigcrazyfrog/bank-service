@@ -16,6 +16,8 @@ python-telegram-bot = {extras = ["webhooks"], version = "*"}
 psycopg2-binary = "*"
 django-ninja = "*"
 pyjwt = "*"
+django-storages = "*"
+boto3 = "*"
 
 [requires]
 python_version = "3.10"
