@@ -5,13 +5,9 @@ from django.core.exceptions import ValidationError
 from telegram import ReplyKeyboardMarkup, ReplyKeyboardRemove, Update
 from telegram.ext import ContextTypes, ConversationHandler
 
-from app.internal.responses.services import log_errors, send_message
 import app.internal.responses.static_text as st
-from app.internal.users.domain.entities import (
-    SuccessResponse,
-    UserOut, UserSchema,
-)
-
+from app.internal.responses.services import log_errors, send_message
+from app.internal.users.domain.entities import SuccessResponse, UserOut, UserSchema
 from app.internal.users.domain.services import UserService
 
 

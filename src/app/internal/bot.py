@@ -5,7 +5,7 @@ from telegram.ext import ApplicationBuilder, CommandHandler, ConversationHandler
 from app.internal.bank.db.repositories import BankRepository
 from app.internal.bank.domain.services import BankService
 from app.internal.bank.presentation.handlers import BotBankHandlers
-from app.internal.storage.domain.service import StorageService
+from app.internal.storage.db.repositories import StorageRepository
 from app.internal.users.db.repositories import UserRepository
 from app.internal.users.presentation.handlers import *
 from config.settings import BOT_PORT, BOT_TOKEN, BOT_WEBHOOK_HOST
@@ -30,7 +30,7 @@ def update_account_handlers(application):
     account_repo = BankRepository()
     account_service = BankService(bank_repo=account_repo)
 
-    storage_service = StorageService(default_storage)
+    storage_service = StorageRepository(default_storage)
     bot_account_handler = BotBankHandlers(account_service=account_service, storage_service=storage_service)
 
     application.add_handler(CommandHandler("balance", sync_to_async(bot_account_handler.get_balance)))

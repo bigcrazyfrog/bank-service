@@ -1,19 +1,19 @@
 import telegram
 from asgiref.sync import async_to_sync, sync_to_async
-from telegram import Update, ReplyKeyboardMarkup
-from telegram.ext import ConversationHandler, ContextTypes
+from telegram import ReplyKeyboardMarkup, Update
+from telegram.ext import ContextTypes, ConversationHandler
 
-from app.internal.bank.domain.entities import AccountListSchema, CardListSchema, BalanceSchema
-from app.internal.bank.domain.services import BankService
-from app.internal.responses.services import send_message, log_errors
 import app.internal.responses.static_text as st
-from app.internal.storage.domain.service import StorageService
+from app.internal.bank.domain.entities import AccountListSchema, BalanceSchema, CardListSchema
+from app.internal.bank.domain.services import BankService
+from app.internal.responses.services import log_errors, send_message
+from app.internal.storage.db.repositories import StorageRepository
 from app.internal.users.db.exceptions import NotFoundException
 from app.internal.users.domain.entities import SuccessResponse
 
 
 class BankHandlers:
-    def __init__(self, bank_service: BankService, storage_service: StorageService):
+    def __init__(self, bank_service: BankService, storage_service: StorageRepository):
         self._bank_service = bank_service
         self._storage_service = storage_service
 
@@ -40,7 +40,7 @@ class BankHandlers:
 
 
 class BotBankHandlers:
-    def __init__(self, account_service: BankService, storage_service: StorageService):
+    def __init__(self, account_service: BankService, storage_service: StorageRepository):
         self._account_service = account_service
         self._storage_service = storage_service
 

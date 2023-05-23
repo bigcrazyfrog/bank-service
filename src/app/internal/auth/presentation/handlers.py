@@ -1,9 +1,9 @@
 from ninja.params import Body
 
 from app.internal.auth.domain.entities import Tokens
+from app.internal.auth.domain.services import AuthService
 from app.internal.users.db.exceptions import NotFoundException
 from app.internal.users.domain.entities import ErrorResponse, SuccessResponse, UserIn
-from app.internal.auth.domain.services import AuthService
 
 
 class AuthHandlers:
