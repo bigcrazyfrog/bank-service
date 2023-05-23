@@ -44,16 +44,26 @@ JWT_ACCESS_TOKEN_LIFETIME = datetime.timedelta(minutes=int(env('JWT_ACCESS_TOKEN
 JWT_REFRESH_TOKEN_LIFETIME = datetime.timedelta(days=int(env('JWT_REFRESH_TOKEN_LIFETIME')))
 SALT = env('SALT')
 
+AWS_ACCESS_KEY_ID = env('AWS_ACCESS_KEY_ID')
+AWS_SECRET_ACCESS_KEY = env('AWS_SECRET_ACCESS_KEY')
+AWS_STORAGE_BUCKET_NAME = env('AWS_STORAGE_BUCKET_NAME')
+AWS_S3_ENDPOINT_URL = env('AWS_S3_ENDPOINT_URL')
+
+DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
+
 # Application definition
 
 INSTALLED_APPS = [
+    # My apps
+    "app",
+
+    # django apps
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "app",
 ]
 
 MIDDLEWARE = [

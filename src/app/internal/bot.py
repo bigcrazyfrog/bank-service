@@ -1,9 +1,11 @@
 from asgiref.sync import sync_to_async
+from django.core.files.storage import default_storage
 from telegram.ext import ApplicationBuilder, CommandHandler, ConversationHandler, MessageHandler, filters
 
 from app.internal.bank.db.repositories import BankRepository
 from app.internal.bank.domain.services import BankService
 from app.internal.bank.presentation.handlers import BotBankHandlers
+from app.internal.storage.db.repositories import StorageRepository
 from app.internal.users.db.repositories import UserRepository
 from app.internal.users.presentation.handlers import *
 from config.settings import BOT_PORT, BOT_TOKEN, BOT_WEBHOOK_HOST
@@ -27,13 +29,16 @@ def update_user_handlers(application):
 def update_account_handlers(application):
     account_repo = BankRepository()
     account_service = BankService(bank_repo=account_repo)
-    bot_account_handler = BotBankHandlers(account_service=account_service)
+
+    storage_service = StorageRepository(default_storage)
+    bot_account_handler = BotBankHandlers(account_service=account_service, storage_service=storage_service)
 
     application.add_handler(CommandHandler("balance", sync_to_async(bot_account_handler.get_balance)))
     application.add_handler(CommandHandler("account_list", sync_to_async(bot_account_handler.get_account_list)))
     application.add_handler(CommandHandler("card_list", sync_to_async(bot_account_handler.get_card_list)))
     application.add_handler(CommandHandler("interaction_list", sync_to_async(bot_account_handler.interaction_list)))
     application.add_handler(CommandHandler("history", sync_to_async(bot_account_handler.transaction_history)))
+    application.add_handler(CommandHandler("unseen_history", sync_to_async(bot_account_handler.get_unseen_transaction)))
 
     conv_handler = ConversationHandler(
         entry_points=[CommandHandler("send_money", sync_to_async(bot_account_handler.send_money))],
@@ -43,6 +48,8 @@ def update_account_handlers(application):
             2: [MessageHandler(filters.TEXT & ~filters.COMMAND, sync_to_async(bot_account_handler.translation_type))],
             4: [MessageHandler(filters.TEXT & ~filters.COMMAND, sync_to_async(bot_account_handler.to_telegram_id))],
             5: [MessageHandler(filters.TEXT & ~filters.COMMAND, sync_to_async(bot_account_handler.to_bank_account))],
+            6: [MessageHandler(filters.PHOTO, bot_account_handler.attach_picture),
+                MessageHandler(filters.TEXT & ~filters.COMMAND, bot_account_handler.attach_picture)],
         },
         fallbacks=[CommandHandler("cancel", sync_to_async(bot_account_handler.cancel))],
     )

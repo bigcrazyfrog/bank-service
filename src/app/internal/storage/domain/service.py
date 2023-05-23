@@ -1,0 +1,3 @@
+class IStorageRepository:
+    def create(self, content: bytearray) -> str:
+        ...

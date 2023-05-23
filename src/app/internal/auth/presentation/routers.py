@@ -1,8 +1,8 @@
 from ninja import NinjaAPI, Router
 
 from app.internal.auth.domain.entities import Tokens
-from app.internal.users.domain.entities import ErrorResponse, SuccessResponse
 from app.internal.auth.presentation.handlers import AuthHandlers
+from app.internal.users.domain.entities import ErrorResponse, SuccessResponse
 
 
 def get_users_router(auth_handlers: AuthHandlers):

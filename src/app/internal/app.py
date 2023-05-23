@@ -1,3 +1,4 @@
+from django.core.files.storage import default_storage
 from django.http import HttpRequest, JsonResponse
 from ninja import NinjaAPI
 from ninja.security import HttpBearer
@@ -11,8 +12,8 @@ from app.internal.bank.db.repositories import BankRepository
 from app.internal.bank.domain.services import BankService
 from app.internal.bank.presentation.handlers import BankHandlers
 from app.internal.bank.presentation.routers import add_banks_router
+from app.internal.storage.db.repositories import StorageRepository
 from app.internal.users.db.exceptions import IncorrectPasswordError
-
 from app.internal.users.db.repositories import NotFoundException, UserRepository
 from app.internal.users.domain.services import UserService
 from app.internal.users.presentation.handlers import UserHandlers
@@ -41,9 +42,11 @@ def get_api():
     user_service = UserService(user_repo=user_repo)
     user_handlers = UserHandlers(user_service=user_service)
 
+    storage_service = StorageRepository(default_storage)
+
     bank_repo = BankRepository()
     bank_service = BankService(bank_repo=bank_repo)
-    bank_handlers = BankHandlers(bank_service=bank_service)
+    bank_handlers = BankHandlers(bank_service=bank_service, storage_service=storage_service)
 
     auth_repo = AuthRepository()
     auth_service = AuthService(auth_repo=auth_repo)
