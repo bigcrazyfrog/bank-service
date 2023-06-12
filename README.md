@@ -14,7 +14,7 @@ Code structure implementation follows a [Clean Architecture][cleanarchitecture] 
 
 Download source code cloning this repository:
 ```
-git clone https://gitlab.com/bigcrazyfrog/app.git
+git clone https://github.com/bigcrazyfrog/bank-service.git
 ```
 
 ## Run the API backend:
