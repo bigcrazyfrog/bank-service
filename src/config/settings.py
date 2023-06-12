@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 import datetime
 import os
 from pathlib import Path
+import logging.config
 
 import environ
 
@@ -50,6 +51,43 @@ AWS_STORAGE_BUCKET_NAME = env('AWS_STORAGE_BUCKET_NAME')
 AWS_S3_ENDPOINT_URL = env('AWS_S3_ENDPOINT_URL')
 
 DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
+
+FORMATTERS = {
+    "default": {
+        "()": "python_telegram_logger.MarkdownFormatter",
+        "fmt": " *%(levelname)s* %(name)s : %(message)s"
+    }
+}
+
+HANDLERS = {
+    "telegram": {
+        "class": "python_telegram_logger.Handler",
+        "token": env("LOGGER_BOT_TOKEN"),
+        "chat_ids": env("LOGGER_CHAT_IDS").split(),
+        "formatter": "default",
+    }
+}
+
+LOGGERS = {
+    "tg": {
+        "handlers": ["telegram"],
+        "level": "DEBUG",
+        "propagate": True,
+    }
+}
+
+LOGGING_CONF = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": FORMATTERS,
+    "handlers": HANDLERS,
+    "loggers": LOGGERS,
+}
+
+logging.config.dictConfig(LOGGING_CONF)
+
+logger = logging.getLogger("tg")
+logger.debug("mmm")
 
 # Application definition
 
@@ -102,8 +140,12 @@ WSGI_APPLICATION = "config.wsgi.application"
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': env('POSTGRES_NAME'),
+        'USER': env('POSTGRES_USER'),
+        'PASSWORD': env('POSTGRES_PASSWORD'),
+        'HOST': env('POSTGRES_HOST'),
+        'PORT': env('POSTGRES_PORT'),
     }
 }
 

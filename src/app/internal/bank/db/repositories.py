@@ -1,3 +1,4 @@
+import logging
 from itertools import chain
 from typing import List, Optional
 
@@ -11,6 +12,7 @@ from app.internal.users.db.exceptions import NotFoundException
 from app.internal.users.domain.entities import ErrorResponse
 
 BATCH_SIZE: int = 10
+logger = logging.getLogger("tg")
 
 
 class BankRepository(IBankRepository):
@@ -67,6 +69,8 @@ class BankRepository(IBankRepository):
             account2.save(update_fields=('balance',))
 
         Transaction.objects.create(from_account=account1, to_account=account2, amount=amount, postcard=path)
+
+        logger.info(f"Со счета: {from_account} на счет: {to_account} сумма: {amount}")
         return True
 
     def _see_transaction(self, account: Account):

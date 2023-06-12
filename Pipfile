@@ -18,6 +18,8 @@ django-ninja = "*"
 pyjwt = "*"
 django-storages = "*"
 boto3 = "*"
+prometheus-client = "*"
+python-telegram-logger = "*"
 
 [requires]
 python_version = "3.10"

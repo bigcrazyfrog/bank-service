@@ -1,6 +1,16 @@
 version: "3.9"
 
 services:
+  postgres:
+    container_name: ${POSTGRES_HOST}
+    image: postgres:13-alpine3.18
+    env_file:
+      - .env
+    volumes:
+      - ./postgres_data:/var/lib/postgresql/data/
+    networks:
+      - postgres
+
   web:
     container_name: app
     image: ${IMAGE_NAME}
@@ -9,7 +19,9 @@ services:
       - ./src/mounted:/opt/file
     ports:
       - "${PORT}:${PORT}"
-    command: python ./src/manage.py runserver 0.0.0.0:8000
+    command: python3 ./src/manage.py runserver 0.0.0.0:${PORT}
+    networks:
+      - postgres
 
   bot:
     container_name: bot
@@ -19,4 +31,13 @@ services:
       - ./src/mounted:/opt/file
     ports:
       - "${BOT_PORT}:${BOT_PORT}"
-    command: python ./src/manage.py bot
+    command: python3 ./src/manage.py bot
+    networks:
+      - postgres
+
+volumes:
+  postgres_data:
+
+networks:
+  postgres:
+    driver: bridge
