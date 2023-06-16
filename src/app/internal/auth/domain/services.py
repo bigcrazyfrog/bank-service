@@ -19,6 +19,21 @@ class IAuthRepository:
     def register_user(self, user_data: UserIn) -> bool:
         ...
 
+    def is_correct_password(self, id: str, password: str) -> bool:
+        ...
+
+    def token_exists(self, token: str) -> bool:
+        ...
+
+    def create_token(self, refresh_token: str, user_id: str) -> None:
+        ...
+
+    def revoke_token(self, token: str) -> None:
+        ...
+
+    def revoke_all_tokens(self, user_id: str) -> None:
+        ...
+
 
 class AuthService:
     def __init__(self, auth_repo: IAuthRepository):
@@ -83,10 +98,14 @@ class AuthService:
 
         return Tokens(access_token=access_token, refresh_token=refresh_token)
 
-    def _generate_access_token(self, user_id: str):
+    def _generate_access_token(self, user_id: str) -> str:
         date = str(datetime.now() + JWT_ACCESS_TOKEN_LIFETIME)
-        return jwt.encode({"id": str(user_id), "admin": False, "date": date}, JWT_ACCESS_SECRET, algorithm="HS256")
+        payload = {"id": str(user_id), "admin": False, "date": date}
+        
+        return jwt.encode(payload, JWT_ACCESS_SECRET, algorithm="HS256")
 
-    def _generate_refresh_token(self, user_id: str):
+    def _generate_refresh_token(self, user_id: str) -> str:
         date = str(datetime.now() + JWT_REFRESH_TOKEN_LIFETIME)
-        return jwt.encode({"id": str(user_id), "date": date}, JWT_REFRESH_SECRET, algorithm="HS256")
+        payload = {"id": str(user_id), "date": date}
+        
+        return jwt.encode(payload, JWT_REFRESH_SECRET, algorithm="HS256")
