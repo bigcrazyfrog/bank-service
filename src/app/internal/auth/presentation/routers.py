@@ -5,7 +5,8 @@ from app.internal.auth.presentation.handlers import AuthHandlers
 from app.internal.users.domain.entities import ErrorResponse, SuccessResponse
 
 
-def get_users_router(auth_handlers: AuthHandlers):
+def get_users_router(auth_handlers: AuthHandlers) -> Router:
+    """Get user router."""
     router = Router(tags=['auth'])
 
     router.add_api_operation(
@@ -35,6 +36,8 @@ def get_users_router(auth_handlers: AuthHandlers):
     return router
 
 
-def add_auth_router(api: NinjaAPI, auth_handlers: AuthHandlers):
+def add_auth_router(api: NinjaAPI, auth_handlers: AuthHandlers) -> NinjaAPI:
+    """Add user router to REST API."""
     auth_handler = get_users_router(auth_handlers)
     api.add_router('', auth_handler)
+    return api

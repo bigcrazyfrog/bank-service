@@ -5,14 +5,14 @@ from app.internal.bank.db.models import Account, Card, Transaction
 
 @admin.register(Account)
 class AccountAdmin(admin.ModelAdmin):
-    pass
+    """Register `Account` model in admin panel."""
 
 
 @admin.register(Card)
 class CardAdmin(admin.ModelAdmin):
-    pass
+    """Register `Card` model in admin panel."""
 
 
 @admin.register(Transaction)
 class TransactionAdmin(admin.ModelAdmin):
-    pass
+    """Register `Transaction` model in admin panel."""
