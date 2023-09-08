@@ -1,5 +1,5 @@
 from django.core.files.storage import default_storage
-from django.http import HttpRequest, JsonResponse
+from django.http import HttpRequest, HttpResponse, JsonResponse
 from ninja import NinjaAPI
 from ninja.security import HttpBearer
 
@@ -21,11 +21,14 @@ from app.internal.users.presentation.routers import add_users_router
 
 
 class HTTPJWTAuth(HttpBearer):
+    """Authentication middleware for REST API."""
+
     def __init__(self, auth_service: AuthService):
         super().__init__()
         self._auth_service = auth_service
 
     def authenticate(self, request: HttpRequest, token: str) -> str | None:
+        """Add User ID to request."""
         if not self._auth_service.check_access_token(token):
             return None
 
@@ -37,7 +40,8 @@ class HTTPJWTAuth(HttpBearer):
         return token
 
 
-def get_api():
+def get_api() -> NinjaAPI:
+    """Assembly point of general API."""
     user_repo = UserRepository()
     user_service = UserService(user_repo=user_repo)
     user_handlers = UserHandlers(user_service=user_service)
@@ -67,11 +71,13 @@ def get_api():
     return api
 
 
+# General NinjaAPI object using as REST API
 ninja_api = get_api()
 
 
 @ninja_api.exception_handler(NotFoundException)
-def user_not_found_exception_handler(request, exc):
+def user_not_found_exception_handler(request: HttpRequest, exc) -> HttpResponse:
+    """Handler for NotFoundError."""
     return ninja_api.create_response(
         request,
         {"message": f"{exc.name} with id {exc.id} not found"},
@@ -80,7 +86,12 @@ def user_not_found_exception_handler(request, exc):
 
 
 @ninja_api.exception_handler(IncorrectPasswordError)
-def incorrect_password_exception_handler(request, exc):
+def incorrect_password_exception_handler(request: HttpRequest, exc) -> HttpResponse:
+    """Handler for IncorrectPasswordError.
+
+    Called if user password is invalid.
+
+    """
     return ninja_api.create_response(
         request,
         {"message": "Incorrect password or username"},
@@ -89,15 +100,18 @@ def incorrect_password_exception_handler(request, exc):
 
 
 @ninja_api.exception_handler(AlreadyExistException)
-def already_exist_exception_handler(request, exc):
+def already_exist_exception_handler(request: HttpRequest, exc) -> HttpResponse:
+    """Handler for AlreadyExistException."""
     return ninja_api.create_response(
         request,
         {"message": f"{exc.name} {exc.id} is already exist"},
         status=400,
     )
 
+
 @ninja_api.exception_handler(Exception)
-def exception_handler(request, exc):
+def exception_handler(request: HttpRequest, exc) -> HttpResponse:
+    """Handler for unknown error."""
     return ninja_api.create_response(
         request,
         {"message": str(exc)},

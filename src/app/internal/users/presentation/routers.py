@@ -1,13 +1,13 @@
 from typing import List
 
-from django.http import JsonResponse
 from ninja import NinjaAPI, Router
 
-from app.internal.users.domain.entities import ErrorResponse, SuccessResponse, Tokens, UserOut
+from app.internal.users.domain.entities import ErrorResponse, SuccessResponse, UserOut
 from app.internal.users.presentation.handlers import UserHandlers
 
 
-def get_users_router(user_handlers: UserHandlers):
+def get_users_router(user_handlers: UserHandlers) -> Router:
+    """Get router contains path to user handlers."""
     router = Router(tags=['users'])
 
     router.add_api_operation(
@@ -48,6 +48,8 @@ def get_users_router(user_handlers: UserHandlers):
     return router
 
 
-def add_users_router(api: NinjaAPI, user_handlers: UserHandlers):
-    users_handler = get_users_router(user_handlers)
-    api.add_router('/me', users_handler)
+def add_users_router(api: NinjaAPI, user_handlers: UserHandlers) -> NinjaAPI:
+    """Add user router to api."""
+    users_router = get_users_router(user_handlers)
+    api.add_router('/me', users_router)
+    return api

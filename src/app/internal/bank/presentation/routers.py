@@ -1,4 +1,3 @@
-from django.http import JsonResponse
 from ninja import NinjaAPI, Router
 
 from app.internal.bank.domain.entities import AccountListSchema, BalanceSchema, CardListSchema
@@ -6,7 +5,8 @@ from app.internal.bank.presentation.handlers import BankHandlers
 from app.internal.users.domain.entities import ErrorResponse, SuccessResponse
 
 
-def get_banks_router(account_handlers: BankHandlers):
+def get_banks_router(account_handlers: BankHandlers) -> Router:
+    """Get bank router."""
     router = Router(tags=['bank'])
 
     router.add_api_operation(
@@ -47,6 +47,8 @@ def get_banks_router(account_handlers: BankHandlers):
     return router
 
 
-def add_banks_router(api: NinjaAPI, bank_handlers: BankHandlers):
+def add_banks_router(api: NinjaAPI, bank_handlers: BankHandlers) -> NinjaAPI:
+    """Add bank router to REST API."""
     bank_handler = get_banks_router(bank_handlers)
     api.add_router('/bank', bank_handler)
+    return api

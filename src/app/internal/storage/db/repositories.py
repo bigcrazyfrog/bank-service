@@ -5,11 +5,17 @@ from config.settings import AWS_S3_ENDPOINT_URL, AWS_STORAGE_BUCKET_NAME
 
 
 class StorageRepository(IStorageRepository):
+    """Repository for AWS S3 storage."""
+
     def __init__(self, storage: Storage):
         self._storage = storage
 
-
     def create(self, content: bytearray) -> str:
+        """Create new postcard.
+
+        Return path to created file in storage.
+
+        """
         alternative_name = self._storage.get_alternative_name("postcard", ".jpg")
         file = self._storage.open(alternative_name, "w")
         file.write(content)
