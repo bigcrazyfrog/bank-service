@@ -1,5 +1,5 @@
-import telegram
-from asgiref.sync import async_to_sync, sync_to_async
+from asgiref.sync import sync_to_async
+from django.http import HttpRequest
 from telegram import ReplyKeyboardMarkup, Update
 from telegram.ext import ContextTypes, ConversationHandler
 
@@ -13,39 +13,52 @@ from app.internal.users.domain.entities import SuccessResponse
 
 
 class BankHandlers:
+    """Bank handlers for REST API."""
+
     def __init__(self, bank_service: BankService, storage_service: StorageRepository):
         self._bank_service = bank_service
         self._storage_service = storage_service
 
-    def get_account_list(self, request) -> AccountListSchema:
+    def get_account_list(self, request: HttpRequest) -> AccountListSchema:
+        """Get a list of accounts which the user has."""
         return self._bank_service.get_account_list(user_id=request.user)
 
-    def get_card_list(self, request) -> CardListSchema:
+    def get_card_list(self, request: HttpRequest) -> CardListSchema:
+        """Get a list of cards which the user has."""
         return self._bank_service.get_card_list(user_id=request.user)
 
-    def get_balance(self, request, number: int) -> BalanceSchema:
+    def get_balance(self, request: HttpRequest, number: int) -> BalanceSchema:
+        """Get balance of card."""
         balance = self._bank_service.get_balance(user_id=request.user, number=number)
         return BalanceSchema(balance=balance)
 
-    def send_money(self, request, from_account: int, to_account: int, amount: float) -> SuccessResponse:
+    def send_money(self, request: HttpRequest, from_account: int, to_account: int, amount: float) -> SuccessResponse:
+        """Create new money transaction."""
         success = self._bank_service.send_money(user_id=request.user, from_account=from_account,
                                                 to_account=to_account, amount=amount)
 
         return SuccessResponse(success=success)
 
-    def send_money_by_id(self, request, from_account: int, by_id: str, amount: float) -> SuccessResponse:
+    def send_money_by_id(self, request: HttpRequest, from_account: int, by_id: str, amount: float) -> SuccessResponse:
         success = self._bank_service.send_money_by_id(user_id=request.user, from_account=from_account,
                                                       by_id=by_id, amount=amount)
         return SuccessResponse(success=success)
 
 
 class BotBankHandlers:
+    """Bank handlers for Telegram bot.
+
+    Contain sync methods for interaction with bank by Telegram bot API.
+
+    """
+
     def __init__(self, account_service: BankService, storage_service: StorageRepository):
         self._account_service = account_service
         self._storage_service = storage_service
 
     @log_errors
-    def get_balance(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+    def get_balance(self, update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+        """Send current balance of account."""
         try:
             user_id = update.effective_chat.id
             number = context.args[0]
@@ -58,7 +71,8 @@ class BotBankHandlers:
         send_message(update, context, text)
 
     @log_errors
-    def get_account_list(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+    def get_account_list(self, update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+        """Send a list of existing account numbers which the user has."""
         accounts = self._account_service.get_account_list(update.effective_chat.id)
         account_numbers = accounts.accounts
 
@@ -69,7 +83,8 @@ class BotBankHandlers:
         send_message(update, context, text)
 
     @log_errors
-    def get_card_list(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+    def get_card_list(self, update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+        """Send a list of existing card numbers which the user has."""
         cards = self._account_service.get_card_list(update.effective_chat.id)
         card_numbers = cards.cards
 
@@ -80,7 +95,12 @@ class BotBankHandlers:
         send_message(update, context, text)
 
     @log_errors
-    def send_money(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+    def send_money(self, update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+        """Starting point of money transaction.
+
+        Start with choosing the account through which the transaction will take place.
+
+        """
         accounts = self._account_service.get_account_list(update.effective_chat.id)
 
         reply_keyboard = []
@@ -94,12 +114,17 @@ class BotBankHandlers:
         return 0
 
     @log_errors
-    def card_number_enter(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+    def card_number_enter(self, update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+        """Handler use after choosing the account.
+
+        Validate input account. Send message with choosing amount of money.
+
+        """
         account_number = update.message.text
 
         try:
             account_number = int(account_number)
-        except Exception:
+        except ValueError:
             send_message(update, context, st.incorrect_input, context.user_data["last_keyboard"])
             return 0
 
@@ -114,14 +139,15 @@ class BotBankHandlers:
         return 1
 
     @log_errors
-    def amount_enter(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+    def amount_enter(self, update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+        """Validate amount input. Send message with choosing type of translation."""
         amount = update.message.text
 
         try:
             amount = int(amount)
             if amount <= 0:
                 raise ValueError
-        except Exception:
+        except ValueError:
             send_message(update, context, st.incorrect_input)
             return 1
 
@@ -140,7 +166,8 @@ class BotBankHandlers:
         return 2
 
     @log_errors
-    def translation_type(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+    def translation_type(self, update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+        """Accepts translation type."""
         match update.message.text:
             case "🆔 Telegram ID":
                 context.user_data["transaction_type"] = "to_telegram_id"
@@ -155,16 +182,18 @@ class BotBankHandlers:
         return 2
 
     @log_errors
-    def to_telegram_id(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+    def to_telegram_id(self, update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+        """Wait telegram ID for transaction."""
         context.user_data["to_telegram_id"] = update.message.text
 
         reply_keyboard = [["Без открытки"]]
         markup = ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True)
-        send_message(update, context, st.send_postcard)
+        send_message(update, context, st.send_postcard, markup=markup)
         return 6
 
     @log_errors
-    def to_bank_account(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+    def to_bank_account(self, update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+        """Wait account number to continue transaction."""
         try:
             context.user_data["to_bank_account"] = int(update.message.text)
             if not self._account_service.exists(int(update.message.text)):
@@ -180,7 +209,12 @@ class BotBankHandlers:
         return 6
 
     @log_errors
-    def cancel(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+    def cancel(self, update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+        """Cancellation of the transaction.
+
+        Clear previous steps. User returns to the main menu.
+
+        """
         context.user_data.clear()
         send_message(update, context, st.cancelled)
 
@@ -188,6 +222,12 @@ class BotBankHandlers:
 
     @log_errors
     async def attach_picture(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+        """Async attach a postcard to transaction.
+
+        The final stage of the transaction. Validate and save input postcard.
+        Send money by the chosen method.
+
+        """
         path = None
         if update.message.text != "Без открытки":
             file = await context.bot.get_file(update.message.photo[-1].file_id)
@@ -196,25 +236,29 @@ class BotBankHandlers:
 
             path = self._storage_service.create(buf)
 
-
         if context.user_data["transaction_type"] == "to_telegram_id":
-            await sync_to_async(self._account_service.send_money_by_id)(update.effective_chat.id,
-                                                   context.user_data["from_account"],
-                                                   context.user_data["to_telegram_id"],
-                                                   context.user_data["amount"],
-                                                   path)
+            await sync_to_async(self._account_service.send_money_by_id)(
+                update.effective_chat.id,
+                context.user_data["from_account"],
+                context.user_data["to_telegram_id"],
+                context.user_data["amount"],
+                path,
+            )
         else:
-            await sync_to_async(self._account_service.send_money)(update.effective_chat.id,
-                                             context.user_data["from_account"],
-                                             context.user_data["to_bank_account"],
-                                             context.user_data["amount"],
-                                             path)
+            await sync_to_async(self._account_service.send_money)(
+                update.effective_chat.id,
+                context.user_data["from_account"],
+                context.user_data["to_bank_account"],
+                context.user_data["amount"],
+                path,
+            )
 
         await context.bot.send_message(chat_id=update.effective_chat.id, text=st.successful)
         return ConversationHandler.END
 
     @log_errors
     def transaction_history(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+        """Send all lasted transaction history."""
         text = st.interaction_not_found
         try:
             account = context.args[0]
@@ -228,6 +272,7 @@ class BotBankHandlers:
 
     @log_errors
     def get_unseen_transaction(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+        """Send history of previously unseen transactions."""
         text = st.interaction_not_found
         try:
             account = context.args[0]
@@ -241,6 +286,7 @@ class BotBankHandlers:
 
     @log_errors
     def interaction_list(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+        """Send a list of users who have recently had an interaction with."""
         text = st.interaction_not_found
 
         interactions = self._account_service.interaction_list(update.effective_chat.id)

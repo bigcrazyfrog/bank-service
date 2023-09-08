@@ -7,6 +7,12 @@ RE_NUMBER = r'(^[+0-9]{1,3})*([0-9]{10,11}$)'
 
 
 def validate_phone(phone_number: str) -> None:
+    """Check phone number custom validation.
+
+    Raises:
+        ValidationError: If number is not valid.
+
+    """
     rule = re.compile(RE_NUMBER)
 
     if not rule.search(phone_number):
@@ -14,6 +20,8 @@ def validate_phone(phone_number: str) -> None:
 
 
 class User(models.Model):
+    """Custom telegram user model."""
+
     id = models.CharField(
         verbose_name='telegram ID',
         primary_key=True,
@@ -50,9 +58,12 @@ class User(models.Model):
         blank=True,
     )
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"{self.name}"
 
+    def __repr__(self) -> str:
+        return f"User<{self.id}>"
+
     class Meta:
-        verbose_name = 'Profile'
-        verbose_name_plural = 'Profiles'
+        verbose_name = "Profile"
+        verbose_name_plural = "Profiles"

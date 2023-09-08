@@ -1,10 +1,21 @@
+from django.conf import settings
 from django.core.management.base import BaseCommand
 
-from app.internal.bot import bot_polling, bot_webhook
+from app.internal import bot
 
 
 class Command(BaseCommand):
-    help = 'bot'
+    """Launch of Telegram bot."""
+
+    help = "Run Telegram bot"
 
     def handle(self, *args, **options):
-        bot_polling()
+        """Telegram bot endpoint.
+
+        If debug is true use polling, webhook with others.
+
+        """
+        if settings.DEBUG:
+            bot.start_polling()
+        else:
+            bot.start_webhook()

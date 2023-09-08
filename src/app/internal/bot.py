@@ -1,6 +1,6 @@
 from asgiref.sync import sync_to_async
 from django.core.files.storage import default_storage
-from telegram.ext import ApplicationBuilder, CommandHandler, ConversationHandler, MessageHandler, filters
+from telegram.ext import Application, ApplicationBuilder, CommandHandler, ConversationHandler, MessageHandler, filters
 
 from app.internal.bank.db.repositories import BankRepository
 from app.internal.bank.domain.services import BankService
@@ -11,7 +11,7 @@ from app.internal.users.presentation.handlers import *
 from config.settings import BOT_PORT, BOT_TOKEN, BOT_WEBHOOK_HOST
 
 
-def update_user_handlers(application):
+def update_user_handlers(application: Application) -> Application:
     user_repo = UserRepository()
     user_service = UserService(user_repo=user_repo)
     bot_user_handler = BotUserHandlers(user_service=user_service)
@@ -25,8 +25,10 @@ def update_user_handlers(application):
     application.add_handler(CommandHandler("remove_favorite", sync_to_async(bot_user_handler.remove_favorite)))
     application.add_handler(CommandHandler("set_password", sync_to_async(bot_user_handler.set_password)))
 
+    return application
 
-def update_account_handlers(application):
+
+def update_account_handlers(application: Application) -> Application:
     account_repo = BankRepository()
     account_service = BankService(bank_repo=account_repo)
 
@@ -58,24 +60,26 @@ def update_account_handlers(application):
     return application
 
 
-def bot_polling():
+def start_polling() -> None:
+    """Starting bot with polling."""
     application = ApplicationBuilder().token(BOT_TOKEN).build()
 
     update_user_handlers(application=application)
     update_account_handlers(application=application)
 
-    application.run_polling()
+    application.run_polling(timeout=30)
 
 
-def bot_webhook():
+def start_webhook() -> None:
+    """Starting bot with webhook."""
     application = ApplicationBuilder().token(BOT_TOKEN).build()
 
     update_user_handlers(application=application)
     update_account_handlers(application=application)
 
     application.run_webhook(
-        listen='0.0.0.0',
+        listen="0.0.0.0",
         port=BOT_PORT,
         url_path=BOT_TOKEN,
-        webhook_url=f'https://{BOT_WEBHOOK_HOST}/{BOT_TOKEN}',
+        webhook_url=f"https://{BOT_WEBHOOK_HOST}/{BOT_TOKEN}",
     )

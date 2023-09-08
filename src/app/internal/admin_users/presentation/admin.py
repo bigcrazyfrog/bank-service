@@ -5,4 +5,4 @@ from app.internal.admin_users.db.models import AdminUser
 
 @admin.register(AdminUser)
 class AdminUserAdmin(admin.ModelAdmin):
-    pass
+    """Register administrator user in admin panel."""

@@ -10,9 +10,8 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 import datetime
-import os
-from pathlib import Path
 import logging.config
+from pathlib import Path
 
 import environ
 
@@ -52,6 +51,8 @@ AWS_S3_ENDPOINT_URL = env('AWS_S3_ENDPOINT_URL')
 
 DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
 
+# Loggers
+
 FORMATTERS = {
     "default": {
         "()": "python_telegram_logger.MarkdownFormatter",
@@ -87,7 +88,6 @@ LOGGING_CONF = {
 logging.config.dictConfig(LOGGING_CONF)
 
 logger = logging.getLogger("tg")
-logger.debug("mmm")
 
 # Application definition
 
@@ -133,7 +133,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = "config.wsgi.application"
-
 
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
